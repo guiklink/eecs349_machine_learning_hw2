@@ -8,6 +8,7 @@ import csv
 ##############################################
 #          Array of DataRow = table			 #
 #            Data Row = Instance             #
+#         Not search = Inverse Search        #
 ##############################################
 
 # IMPORT CSV DATA ##############################################################################
@@ -75,6 +76,33 @@ def filterTable(table, featureTag, value, toValue=None):
 				for row in table:
 					if row.retrieve(featureTag).getValue() >= value and row.retrieve(featureTag).getValue() <= toValue:
 						filteredList.append(row)
+		return filteredList
+
+
+###############################################################################################
+
+# DATA FILTER BY ID ###########################################################################
+
+# Given a table, and a list of IDs, retrieve a table containing all the DataRow
+
+# Entry -> DataRow[] | List of Strings (IDs for the DataRows desired) | (Optional) Boolean for inverse search
+# Returns -> DataRow[] filtered accordingly
+
+def filterTableByID(table, idList, nope = False):		
+	if len(table) < 1:
+		raise NameError('Empty Table!')
+	else:
+		filteredList = []
+		if nope:
+			# do an inverse search
+			for row in table:
+				if str(row.id) not in idList:
+					filteredList.append(row)
+		else:
+			# do an normal search
+			for row in table:
+				if str(row.id) in idList:
+					filteredList.append(row)
 		return filteredList
 
 

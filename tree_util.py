@@ -5,8 +5,15 @@
 
 class Node():
 	def __init__():
-		pass
-
+		self.tag = None				#
+		self.tag = None				#
+		self.tag = None				#
+		self.tag = None				#
+		self.tag = None				#
+		self.tag = None				#
+		self.tag = None				#
+		self.tag = None				#
+		
 		
 ###############################################################################################
 
