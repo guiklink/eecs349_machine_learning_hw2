@@ -2,11 +2,12 @@
 
 
 from data_util import *
-
+import csv
 
 ################ CONVENTIONS #################
 ##############################################
 #          Array of DataRow = table			 #
+#            Data Row = Instance             #
 ##############################################
 
 # IMPORT CSV DATA ##############################################################################
@@ -14,8 +15,37 @@ from data_util import *
 # Gets a string path for a CSV file and returns an array of DataRow (Table), where each position of the array
 # will correpspond to a table line
 
-def importDataCSV(path):		
-	return 0
+# Entry -> (String) location of metadata.csv | (String) location of the CSV btrain.csv
+# Returns -> array(DataRow) containing all data "Table"
+
+def importDataCSV(metPath, dataPath):		
+	metList = []
+	dataList = []
+	dataRowTable = []
+
+	# Import and handle metadata.csv
+	file = open(metPath)
+	csvFile = csv.reader(file)
+	for row in csvFile:
+		metList.append(row)
+
+	typeList = []
+	for i in metList:
+		typeList.append(i[1])
+	typeList.pop(0)
+
+	# Import and handle rawdata.csv
+	file = open(dataPath)
+	csvFile = csv.reader(file)
+	for row in csvFile:
+		dataList.append(row)
+
+	tagList = dataList.pop(0)
+
+	for row in dataList:
+		dataRowTable.append(DataRow(tagList, row, typeList))
+
+	return dataRowTable
 
 
 ###############################################################################################
@@ -24,13 +54,91 @@ def importDataCSV(path):
 
 # Given a table, a feature and a value returns a table containing entries with that value
 
-def filterTable(table, feature, value):		
-	return 0
+# Entry -> DataRow[] | String | String | (Optional) String
+# Returns -> DataRow[] filtered accordingly
 
-# OVERLOAD: Given a table, a feature and a value range returns a table containing entries with that value
+def filterTable(table, featureTag, value, toValue=None):		
+	if len(table) < 1:
+		raise NameError('Empty Table!')
+	else:
+		filteredList = []
+		if toValue == None:
+			# Search for the instances with the value
+			for row in table:
+				if str(row.retrieve(featureTag).getValue()) == str(value):
+					filteredList.append(row)
+		else:
+			# Search for the instances with the value in the interval
+			if table[0].retrieve(featureTag).fType == FeatureType.DISCRETE:
+					raise NameError('This is a discrete data type!')
+			else:
+				for row in table:
+					if row.retrieve(featureTag).getValue() >= value and row.retrieve(featureTag).getValue() <= toValue:
+						filteredList.append(row)
+		return filteredList
 
-def filterTable(table, feature, min, max):		
-	return 0
+
+###############################################################################################
+
+# ATRIBUTE PCT ################################################################################
+
+# Given a table, a feature and a value returns a table containing entries with that value
+
+# Entry -> DataRow[] | String | String | (Optional) String
+# Returns -> Float (pct of the atribute occurence in data)
+
+def atributePct(table, featureTag, value, toValue=None):		
+	total = len(table)
+	instances = 0
+
+	if toValue == None:
+		instances = len(filterTable(table,featureTag,value))
+	else:
+		instances = len(filterTable(table,featureTag,value,toValue))
+
+	return float(instances)/float(total)
+
+
+###############################################################################################
+
+# DISTINCT ATRIBUTES ##########################################################################
+
+# Given a table, a feature and a value returns a table containing entries with that value
+
+# Entry -> DataRow[] | String (atribute name) 
+# Returns -> List (distinct values for that atribute)
+
+def distinctAtributes(table, featureTag):		
+	if len(table) < 1:
+		raise NameError('Empty Table!')
+	else:
+		result = []
+		for row in table:
+			val = row.retrieve(featureTag).getValue() 
+			if(val not in result):
+				result.append(val)
+		return result
+
+###############################################################################################
+
+# GENERATE CSV FILE ###########################################################################
+
+# Takes a table and output a .csv file of it
+
+# Entry -> DataRow[] | (Optional) path, or it will put in the project root as sample.csv 
+# Returns -> 
+
+def createFileCSV(table, path="./sample"):		
+	if len(table) < 1:
+		raise NameError('Empty Table!')
+	else:
+		file = open(path + '.csv', 'w+')
+
+		file.write(table[0].toStringHeaders() + "\n")
+
+		for row in table:
+			file.write(row.toStringCSV() + '\n')
+		file.close() 
 
 ###############################################################################################
 
