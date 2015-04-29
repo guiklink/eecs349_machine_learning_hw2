@@ -80,3 +80,23 @@ def filterTable(table, featureTag, value, toValue=None):
 
 ###############################################################################################
 
+# DATA FILTER #################################################################################
+
+# Given a table, a feature and a value returns a table containing entries with that value
+
+# Entry -> DataRow[] | String | String | (Optional) String
+# Returns -> Float (pct of the atribute occurence in data)
+
+def atributePct(table, featureTag, value, toValue=None):		
+	total = len(table)
+	instances = 0
+
+	if toValue == None:
+		instances = len(filterTable(table,featureTag,value))
+	else:
+		instances = len(filterTable(table,featureTag,value,toValue))
+
+	return float(instances)/float(total)
+
+
+###############################################################################################
