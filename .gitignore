@@ -2,3 +2,4 @@
 *.py~
 *.csv~
 *.csv#
+*.pyc

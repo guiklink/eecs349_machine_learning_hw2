@@ -20,9 +20,9 @@ def stringToEnum(fType):					# Converts string to enum type
 
 class Feature():
 	def __init__(self, tag, value, fType):
-		self.tag = tag								# Name of the feature (helps debuging)
-		self.value = value 							# Value for the feature
-		self.fType = stringToEnum(fType)			# Type of data stored converted to ENUM FeatureType
+		self.tag = tag.strip()								# Name of the feature (helps debuging) | .strip() trims blanks e.g. " "
+		self.value = value.strip() 							# Value for the feature | .strip() trims blanks e.g. " "
+		self.fType = stringToEnum(fType.strip())			# Type of data stored converted to ENUM FeatureType | .strip() trims blanks e.g. " "
 
 	def getValue(self):								# return the value converted to the apropriate type (use this function to retrieve the feature value)
 		if self.fType == FeatureType.DISCRETE:
@@ -58,7 +58,7 @@ class DataRow():											# Data structure for a row of data
 	def toStringCSV(self):									# returns the DataRow in a string format proper for excel
 		s = ""
 		for f in self.features:
-			s += "," + f.toString()
+			s += "," + str(f.value)
 		return ("ID:" + str(self.id) + s)
 
 	def retrieve(self, tag):								# retrieve value by tag
