@@ -64,7 +64,7 @@ class DataRow():											# Data structure for a row of data
 	def retrieve(self, tag):								# retrieve value by tag
 		for f in self.features:
 			if f.tag == tag:								# if tag found return
-				return f.getValue()
+				return f
 		raise NameError('Trying to retrieve from an unexistent column!')	# if tag not found raise an error
 
 ###############################################################################################

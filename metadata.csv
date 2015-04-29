@@ -3,7 +3,7 @@ id,discrete
 winpercent,continuous
 oppwinpercent,continuous
 weather,discrete
-temperature,discrete
+temperature,continuous
 numinjured,continuous
 oppnuminjured,continuous
 startingpitcher,discrete

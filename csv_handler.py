@@ -54,8 +54,8 @@ def importDataCSV(metPath, dataPath):
 
 # Given a table, a feature and a value returns a table containing entries with that value
 
-# Entry ->
-# Returns ->
+# Entry -> DataRow[] | String | String | (Optional) String
+# Returns -> DataRow[] filtered accordingly
 
 def filterTable(table, featureTag, value, toValue=None):		
 	if len(table) < 1:
@@ -65,8 +65,16 @@ def filterTable(table, featureTag, value, toValue=None):
 		if toValue == None:
 			# Search for the instances with the value
 			for row in table:
-				if row.retrieve(featureTag) == str(value):
+				if str(row.retrieve(featureTag).getValue()) == str(value):
 					filteredList.append(row)
+		else:
+			# Search for the instances with the value in the interval
+			if table[0].retrieve(featureTag).fType == FeatureType.DISCRETE:
+					raise NameError('This is a discrete data type!')
+			else:
+				for row in table:
+					if row.retrieve(featureTag).getValue() >= value and row.retrieve(featureTag).getValue() <= toValue:
+						filteredList.append(row)
 		return filteredList
 
 
