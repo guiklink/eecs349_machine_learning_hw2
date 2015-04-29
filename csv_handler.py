@@ -15,11 +15,37 @@ import csv
 # Gets a string path for a CSV file and returns an array of DataRow (Table), where each position of the array
 # will correpspond to a table line
 
-# Entry ->
-# Returns ->
+# Entry -> (String) location of metadata.csv | (String) location of the CSV btrain.csv
+# Returns -> array(DataRow) containing all data
 
-def importDataCSV(path):		
-	return 0
+def importDataCSV(metPath, dataPath):		
+	metList = []
+	dataList = []
+	dataRowTable = []
+
+	# Import and handle metadata.csv
+	file = open(metPath)
+	csvFile = csv.reader(file)
+	for row in csvFile:
+		metList.append(row)
+
+	typeList = []
+	for i in metList:
+		typeList.append(i[1])
+	typeList.pop(0)
+
+	# Import and handle rawdata.csv
+	file = open(dataPath)
+	csvFile = csv.reader(file)
+	for row in csvFile:
+		dataList.append(row)
+
+	tagList = dataList.pop(0)
+
+	for row in dataList:
+		dataRowTable.append(DataRow(tagList, row, typeList))
+
+	return dataRowTable
 
 
 ###############################################################################################

@@ -24,12 +24,15 @@ class Feature():
 		elif self.fType == FeatureType.CONTINUOUS:
 			return float(self.value)
 
+	def toString(self):								# returns the Feature in a string format proper for printing
+		return str(self.tag) + " | " + str(self.value) + " | " + str(self.fType)
+
 ###############################################################################################
 
 # DATA ROW ####################################################################################
 
 class DataRow():											# Data structure for a row of data 
-	def __init__(self, id, tagList, valueList, typeList):
+	def __init__(self, tagList, valueList, typeList):
 		self.id = id										# Unique id of the line (help debugging)
 		self.nFeatures = len(valueList)						# Total number of features per row
 
@@ -38,6 +41,12 @@ class DataRow():											# Data structure for a row of data
 		for i in range(self.nFeatures):								# Iterates to each element of the lists provided
 			tmp = Feature(tagList[i], valueList[i], typeList[i])	# Create a Feature datatype
 			self.features.append(tmp)								# Stores feature in the array
+
+	def toString(self):								# returns the DataRow in a string format proper for printing
+		str = ""
+		for f in self.features:
+			str += " [" + f.toString() + "] "
+		return str
 
 
 ###############################################################################################
