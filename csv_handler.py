@@ -80,7 +80,7 @@ def filterTable(table, featureTag, value, toValue=None):
 
 ###############################################################################################
 
-# DATA FILTER #################################################################################
+# ATRIBUTE PCT ################################################################################
 
 # Given a table, a feature and a value returns a table containing entries with that value
 
@@ -101,7 +101,7 @@ def atributePct(table, featureTag, value, toValue=None):
 
 ###############################################################################################
 
-# DATA FILTER #################################################################################
+# DISTINCT ATRIBUTES ##########################################################################
 
 # Given a table, a feature and a value returns a table containing entries with that value
 
