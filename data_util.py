@@ -26,9 +26,13 @@ class Feature():
 
 	def getValue(self):								# return the value converted to the apropriate type (use this function to retrieve the feature value)
 		if self.fType == FeatureType.DISCRETE:
-			return str(self.value)
+			val = str(self.value)
 		elif self.fType == FeatureType.CONTINUOUS:
-			return float(self.value)
+			if(self.value == "?"):						# replace '?' for None(null)
+				val = None
+			else:
+				val = float(self.value)
+		return val
 
 	def toString(self):								# returns the Feature in a string format proper for printing
 		return str(self.tag) + " | " + str(self.value) + " | " + str(self.fType)
@@ -59,7 +63,13 @@ class DataRow():											# Data structure for a row of data
 		s = ""
 		for f in self.features:
 			s += "," + str(f.value)
-		return ("ID:" + str(self.id) + s)
+		return (str(self.id) + s)
+
+	def toStringHeaders(self):								# returns a list of strings containing the tags of the features in the row
+		s = "id"
+		for f in self.features:
+			s += "," + f.tag
+		return s
 
 	def retrieve(self, tag):								# retrieve value by tag
 		for f in self.features:

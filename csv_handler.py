@@ -100,3 +100,45 @@ def atributePct(table, featureTag, value, toValue=None):
 
 
 ###############################################################################################
+
+# DATA FILTER #################################################################################
+
+# Given a table, a feature and a value returns a table containing entries with that value
+
+# Entry -> DataRow[] | String (atribute name) 
+# Returns -> List (distinct values for that atribute)
+
+def distinctAtributes(table, featureTag):		
+	if len(table) < 1:
+		raise NameError('Empty Table!')
+	else:
+		result = []
+		for row in table:
+			val = row.retrieve(featureTag).getValue() 
+			if(val not in result):
+				result.append(val)
+		return result
+
+###############################################################################################
+
+# GENERATE CSV FILE ###########################################################################
+
+# Takes a table and output a .csv file of it
+
+# Entry -> DataRow[] | (Optional) path, or it will put in the project root as sample.csv 
+# Returns -> 
+
+def createFileCSV(table, path="./sample"):		
+	if len(table) < 1:
+		raise NameError('Empty Table!')
+	else:
+		file = open(path + '.csv', 'w+')
+
+		file.write(table[0].toStringHeaders() + "\n")
+
+		for row in table:
+			file.write(row.toStringCSV() + '\n')
+		file.close() 
+
+###############################################################################################
+
