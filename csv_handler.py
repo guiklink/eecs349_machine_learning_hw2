@@ -16,7 +16,7 @@ import csv
 # will correpspond to a table line
 
 # Entry -> (String) location of metadata.csv | (String) location of the CSV btrain.csv
-# Returns -> array(DataRow) containing all data
+# Returns -> array(DataRow) containing all data "Table"
 
 def importDataCSV(metPath, dataPath):		
 	metList = []
@@ -57,13 +57,18 @@ def importDataCSV(metPath, dataPath):
 # Entry ->
 # Returns ->
 
-def filterTable(table, feature, value):		
-	return 0
+def filterTable(table, featureTag, value, toValue=None):		
+	if len(table) < 1:
+		raise NameError('Empty Table!')
+	else:
+		filteredList = []
+		if toValue == None:
+			# Search for the instances with the value
+			for row in table:
+				if row.retrieve(featureTag) == str(value):
+					filteredList.append(row)
+		return filteredList
 
-# OVERLOAD: Given a table, a feature and a value range returns a table containing entries with that value
-
-def filterTable(table, feature, min, max):		
-	return 0
 
 ###############################################################################################
 

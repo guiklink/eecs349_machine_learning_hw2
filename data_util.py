@@ -61,4 +61,23 @@ class DataRow():											# Data structure for a row of data
 			s += "," + f.toString()
 		return ("ID:" + str(self.id) + s)
 
+	def retrieve(self, tag):								# retrieve value by tag
+		for f in self.features:
+			if f.tag == tag:								# if tag found return
+				return f.getValue()
+		raise NameError('Trying to retrieve from an unexistent column!')	# if tag not found raise an error
+
+###############################################################################################
+
+# Table Printer ##############################################################################
+
+# Function that prints on terminal a DataRow[]
+
+# Entry -> DataRow[]
+# Returns ->
+
+def printTable(table):		
+	for row in table:
+		print row.toStringCSV()
+
 ###############################################################################################
