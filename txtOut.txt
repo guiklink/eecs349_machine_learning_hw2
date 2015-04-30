@@ -1,0 +1,26 @@
+for leaf in tree:
+	node = leaf.node
+	print "if"
+	while node.parent:
+		if node.continuous:
+			if node.greaterThan:
+				print "(node.attribute > node.val)"
+				if node.parent:
+					node=parent
+					print "AND"
+			else:
+				print "(node.attribute < node.val)"
+				if node.parent:
+					node = parent
+					print "AND"
+		else:
+			if node.val == 1:
+				print "node.attribute)"
+				if node.parent:
+					node=node.parent
+					print "AND"
+			else:
+				print "(NOT node.attribute)"
+				if node.parent:
+					node = node.parent
+					print "AND"
