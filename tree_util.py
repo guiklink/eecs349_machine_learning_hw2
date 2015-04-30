@@ -91,21 +91,21 @@ class NodePack():
 		return self.fields[self.dataRowIDs][tag]
 
 	def getNodeEntropy(self, tag, csvData):
-		if self.getDataRowIDs(tag) == None:
+		if self.getDataRowIDs(tag) == None:							# test if DataRows was initialized if not return an error
 			raise NameError('This node links to no instance!')
 		nm = filterTableByID(csvData, self.getDataRowIDs(tag))
-		if len(nm) == 0:
+		if len(nm) == 0:											# checks if the instances for the node were found
 			raise NameError('The IDs in your node dont match any node in the raw data!')
 
-		classifierTag = nm[0].retrieveClassifierTag()
-		entropy = 0
-		classValues = distinctAtributes(nm,classifierTag)
+		classifierTag = nm[0].retrieveClassifierTag()				# takes the classifier from the 1th data row
+		entropy = 0													# init a variable to store entrophy
+		classValues = distinctAtributes(nm,classifierTag)			# retrieve all possible classifier values
 		for val in classValues:
-			pct = atributePct(nm,classifierTag,val)
-			entropy += pct * log(pct,2)
-		return (-1 * entropy)
+			pct = atributePct(nm,classifierTag,val)					# gets the % of that value in the whole data
+			entropy += pct * log(pct,2)								# calculates and store entropy for the value
+		return (-1 * entropy)										# return entrophy
 
-	def getSplitEntropy(self, ):
+	def getSplitEntropy(self, featureTag, value):
 		pass
 		
 ###############################################################################################
