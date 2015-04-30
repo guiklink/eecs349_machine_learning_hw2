@@ -45,11 +45,11 @@ class Feature():
 class DataRow():											# Data structure for a row of data 
 	def __init__(self, tagList, valueList, typeList):
 		self.id = valueList[0]								# Unique id of the line (help debugging)
-		self.nFeatures = len(valueList) - 1					# Total number of features per row
+		self.nFeatures = len(valueList)						# Total number of features per row
 
 		self.features = []									# Creates an array of datatype Feature
 
-		for i in range(1,len(valueList)):							# Iterates to each element of the lists provided, ignoring the 1th element that will ALWAYS be the ID
+		for i in range(len(valueList)):								# Iterates to each element of the lists provided
 			tmp = Feature(tagList[i], valueList[i], typeList[i])	# Create a Feature datatype
 			self.features.append(tmp)								# Stores feature in the array
 
@@ -57,19 +57,19 @@ class DataRow():											# Data structure for a row of data
 		s = ""
 		for f in self.features:
 			s += " [" + f.toString() + "] "
-		return ("ID:" + str(self.id) + " " + s)
+		return s
 
 	def toStringCSV(self):									# returns the DataRow in a string format proper for excel
 		s = ""
 		for f in self.features:
-			s += "," + str(f.value)
-		return (str(self.id) + s)
+			s += str(f.value) + ","
+		return s[0:-1]
 
 	def toStringHeaders(self):								# returns a list of strings containing the tags of the features in the row
-		s = "id"
+		s = ""
 		for f in self.features:
-			s += "," + f.tag
-		return s
+			s += f.tag + ","
+		return s[0:-1]
 
 	def retrieve(self, tag):								# retrieve value by tag
 		for f in self.features:
