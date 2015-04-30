@@ -8,6 +8,7 @@ import csv
 ##############################################
 #          Array of DataRow = table			 #
 #            Data Row = Instance             #
+#         Not search = Inverse Search        #
 ##############################################
 
 # IMPORT CSV DATA ##############################################################################
@@ -54,18 +55,20 @@ def importDataCSV(metPath, dataPath):
 
 # Given a table, a feature and a value returns a table containing entries with that value
 
-# Entry -> DataRow[] | String | String | (Optional) String
+# Entry -> DataRow[] | String | String(Discrete) Float (Continuous) | None(Discrete) Float (Continuous) | (Optional) Boolean for inverse search
 # Returns -> DataRow[] filtered accordingly
 
-def filterTable(table, featureTag, value, toValue=None):		
+def filterTable(table, featureTag, value, toValue=None, nope=True):		
 	if len(table) < 1:
 		raise NameError('Empty Table!')
 	else:
 		filteredList = []
+
+
 		if toValue == None:
 			# Search for the instances with the value
 			for row in table:
-				if str(row.retrieve(featureTag).getValue()) == str(value):
+				if (str(row.retrieve(featureTag).getValue()) == str(value)) != (not(nope)) :
 					filteredList.append(row)
 		else:
 			# Search for the instances with the value in the interval
@@ -73,8 +76,29 @@ def filterTable(table, featureTag, value, toValue=None):
 					raise NameError('This is a discrete data type!')
 			else:
 				for row in table:
-					if row.retrieve(featureTag).getValue() >= value and row.retrieve(featureTag).getValue() <= toValue:
+					if (row.retrieve(featureTag).getValue() >= value and row.retrieve(featureTag).getValue() <= toValue) != (not(nope)):
 						filteredList.append(row)
+		return filteredList
+
+
+###############################################################################################
+
+# DATA FILTER BY ID ###########################################################################
+
+# Given a table, and a list of IDs, retrieve a table containing all the DataRow
+
+# Entry -> DataRow[] | List of Strings (IDs for the DataRows desired) | (Optional) Boolean for inverse search
+# Returns -> DataRow[] filtered accordingly
+
+def filterTableByID(table, idList, nope=True):		
+	if len(table) < 1:
+		raise NameError('Empty Table!')
+	else:
+		filteredList = []
+		# do an inverse search
+		for row in table:
+			if (str(row.id) not in idList) != nope:
+				filteredList.append(row)
 		return filteredList
 
 
