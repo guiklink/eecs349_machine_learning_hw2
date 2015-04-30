@@ -1,8 +1,8 @@
 InitTree()
 	N1 = NodeObject();
-	DataRaw = importDataCSV(MetaData,RAWData)
+	CSVData = importDataCSV(MetaData,RAWData)
 	N1.Tag= 1;
-	N1.DataRowIDs = distinctAtributes(DataRaw,ID)
+	N1.DataRowIDs = distinctAtributes(CSV,ID)
 	AddNode(AllNodes,N1.TAG)
 	AddNode(EdgeNodes,N1.TAG)
 
@@ -40,14 +40,14 @@ NodeEntropy(TAG)
 SplitEnropy(TAG,FEATURETAG,TYPE,VALUE)
 	If TYPE = discrete
 		Nm=  filterByID(DATAPCK,RetrieveNode(TAG).DataRowIDs)
+		Nm0= filterTable(Nm,FEATURETAG,VALUE),NOT
 		Nm1= filterTable(Nm,FEATURETAG,VALUE)
-		Nm2= filterTable(Nm,FEATURETAG,VALUE,NOT)
-		Pm11= attributePct(Nm1,FEATURETAG=classifier,1) #the classifier in this case is 'winner'=(0/1) 
-		Pm12= attributePct(Nm1,FEATURETAG=classifier,0)
-		Pm21= attributePct(Nm2,FEATURETAG=classifier,1) #the classifier in this case is 'winner'=(0/1)
-		Pm22= attributePct(Nm2,FEATURETAG=classifier,0)
+		Pm00= attributePct(Nm0,FEATURETAG=classifier,0) #the classifier in this case is 'winner'=(0/1) 
+		Pm01= attributePct(Nm0,FEATURETAG=classifier,1)
+		Pm10= attributePct(Nm1,FEATURETAG=classifier,0) #the classifier in this case is 'winner'=(0/1)
+		Pm11= attributePct(Nm1,FEATURETAG=classifier,1)
 
-		Entropy = -1* (Nm1/Nm(pm11*log(pm11)+pm12*log(pm12)) + Nm2/Nm(pm21*log(pm21)+pm22*log(pm22)))
+		Entropy = -1* (Nm0/Nm(pm00*log(pm00)+pm01*log(pm01)) + Nm1/Nm(pm10*log(pm10)+pm11*log(pm11)))
 
 	Elseif TYPE = numeric
 		SourceNode=RetrieveNode(AllNodes[1]).
