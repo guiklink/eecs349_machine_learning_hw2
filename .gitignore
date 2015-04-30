@@ -4,3 +4,4 @@
 *.csv#
 *.pyc
 sample.csv
+*.txt~

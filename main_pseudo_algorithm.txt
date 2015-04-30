@@ -1,0 +1,96 @@
+InitTree()
+	N1 = NodeObject();
+	DataRaw = importDataCSV(MetaData,RAWData)
+	N1.Tag= 1;
+	N1.DataRowIDs = distinctAtributes(DataRaw,ID)
+	AddNode(AllNodes,N1.TAG)
+	AddNode(EdgeNodes,N1.TAG)
+
+While(EdgeNodes not Empty)) #GenerateTree
+	For all edge nodes
+		if NodeEntropy(TAG) < phi
+			MakeLeafnode(TAG)
+	MakeChildren(BestSplit())
+
+
+BestSplit()
+	MinEnt <- MAX
+
+	For counter = 1 to len(EdgeNodes)
+		Node=RetrieveNode(EdgeNodes[counter])  
+			For each attribute
+				If discrete
+					For each discrete value
+						e <- SplitEntropy(TAG,FEATURETAG,discrete,VALUE)
+						If e < EminENT, MinENT <- e; bestf <- (tag,attribute,type,value) 
+				Else if numeric
+					For some or all values
+						e <- SplitEntropy(TAG,FEATURETAG,numeric,VALUE)
+						If e < EminENT, MinENT <- e; bestf <- (tag,feature,type,value)
+	Return bestf
+
+
+NodeEntropy(TAG)
+	Nm= filterByID(DATAPCK,RetrieveNode(TAG).DataRowIDs)
+	Pm1= attributePct(Nm,FEATURETAG=classifier,1) #the classifier in this case is 'winner'=(0/1) 
+	Pm2= attributePct(Nm,FEATURETAG=classifier,0)
+	Entropy = (-pm1*log2(pm1)-pm2*log2(pm2))
+	Return Entropy
+
+SplitEnropy(TAG,FEATURETAG,TYPE,VALUE)
+	If TYPE = discrete
+		Nm=  filterByID(DATAPCK,RetrieveNode(TAG).DataRowIDs)
+		Nm1= filterTable(Nm,FEATURETAG,VALUE)
+		Nm2= filterTable(Nm,FEATURETAG,VALUE,NOT)
+		Pm11= attributePct(Nm1,FEATURETAG=classifier,1) #the classifier in this case is 'winner'=(0/1) 
+		Pm12= attributePct(Nm1,FEATURETAG=classifier,0)
+		Pm21= attributePct(Nm2,FEATURETAG=classifier,1) #the classifier in this case is 'winner'=(0/1)
+		Pm22= attributePct(Nm2,FEATURETAG=classifier,0)
+
+		Entropy = -1* (Nm1/Nm(pm11*log(pm11)+pm12*log(pm12)) + Nm2/Nm(pm21*log(pm21)+pm22*log(pm22)))
+
+	Elseif TYPE = numeric
+		SourceNode=RetrieveNode(AllNodes[1]).
+		distinctAtributes(RetrieveNode(AllNodes[1]),)
+
+		Nm=  filterByID(DATAPCK,RetrieveNode(TAG).DataRowIDs)
+		Nm1= filterTable(Nm,FEATURETAG,VALUE)
+		Nm2= filterTable(Nm,FEATURETAG,VALUE,NOT)
+		Pm11= attributePct(Nm1,FEATURETAG=classifier,1) #the classifier in this case is 'winner'=(0/1) 
+		Pm12= attributePct(Nm1,FEATURETAG=classifier,0)
+		Pm21= attributePct(Nm2,FEATURETAG=classifier,1) #the classifier in this case is 'winner'=(0/1)
+		Pm22= attributePct(Nm2,FEATURETAG=classifier,0)
+
+		Entropy = -1* (Nm1/Nm(pm11*log(pm11)+pm12*log(pm12)) + Nm2/Nm(pm21*log(pm21)+pm22*log(pm22)))
+
+	Return(Entropy)
+
+
+MakeLeafnode(TAG)
+	RetrieveNode[TAG].Isleaf=1; #thid may be rendundant
+	RemoveNode(EdgeNodes,TAG)
+	AddNode(LeafNodes,TAG)
+	Return()
+
+MakeChilren(TAG,FEATURETAG,TYPE,VALUE)
+	Parent=RetrieveNode(TAG)
+	Parent.Children=[max(AllNodes)+1,max(AllNodes)+2]
+	Parent.Splitype=TYPE
+	Parent.Attribute=FEATURETAG
+	Parent.Value=VALUE
+
+	Child1=NodeObject()
+	Child1.Tag = Parent.Children[1]
+	Child1.Parent = Parent.Tag
+	Child1.DataRowIDs=filterTable[Parent.DataRowIDs,FEATURETAG,VALUE]
+
+	Child2=NodeObject()
+	Child2.Tag = Parent.Children[2]
+	Child2.Parent = Parent.Tag
+	Child2.DataRowIDs=filterTable[Parent.DataRowIDs,FEATURETAG,VALUE,NOT]
+
+	Append child 1 and 2 to edgenodes
+	Remove parent from edgenode
+
+	Return()
+
