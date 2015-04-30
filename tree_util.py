@@ -15,7 +15,7 @@ class NodeType(Enum):				# Enumerator for types of data
 
 class NodePack():
 	def __init__(self):
-		self.fields = [{}] * 6
+		self.fields = [{},{},{},{},{},{}]
 		self.parent = 0
 		self.child0 = 1
 		self.child1 = 2
