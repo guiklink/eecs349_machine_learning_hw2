@@ -27,11 +27,11 @@ class NodePack():
 		self.splitType = 3
 		self.nType = 4
 		self.dataRowIDs = 5
-
+	
 	def addNode(self, tag):
 		for i in range(len(self.fields)):
 			self.fields[i].update({tag:None})
-
+		
 	def removeNode(self, tag):
 		for i in range(len(self.fields)):
 			del self.fields[i][tag]	

@@ -15,25 +15,19 @@ def draw(parent_name, child_name):
 	graph.add_edge(edge)
 
 
-def visit(dtree, parent=None):
-	"""Explores the full tree and draws all necessary connections"""
-	tags = dtree.fields[0].keys()
-	index = 0
-	for i in dtree.fields[dtree.parent].keys():
-		
-		if parent: 
-			k1 = dtree.fields[dtree.child0][index]
-			k2 = dtree.fields[dtree.child1][index]
-			
-			print k1,k2,parent
-			print ""
-			print "i:",i,"index: ",index
-			print ""
-			if parent and k1: 
-				draw(parent, k1)
-			if parent and k2:
-				draw(parent, k2)
-		parent = tags[index]
-		index = index+1
+def visit(dtree, node=None):
+	"""Explores all nodes in a tree and builds a visual tree as a png file in root"""
+	tags = dtree.fields[dtree.parent].keys()  #returns a list of node names
+	
+	#go through each instance of tag and try writing a line between parent and child
+	for node in tags:		
+		try:
+			k1 = dtree.fields[dtree.child0][node]
+			k2 = dtree.fields[dtree.child1][node]
+		except:
+			print "no child"
 
-		# visit()
+		if node and k1:
+			draw(node,k1)
+		if node and k2:
+			draw(node,k2)
