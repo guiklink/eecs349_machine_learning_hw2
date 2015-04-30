@@ -127,15 +127,23 @@ class NodePack():
 
 # Calulate the best node where a split can be performed
 
-# Entry -> Float (a constant) | DataRow[] (csv data)
-# Returns -> String (tag of the node that will be slip)| String (atribute for spliting) | String or Floar (value for spliting)
+# Entry -> String (node tag) | String (feature to plit) | String (value to split)
+# Returns -> 
 
-	def getSplitEntropy(self, featureTag, value):
-		if self.getDataRowIDs(tag) == None:							# test if DataRows was initialized if not return an error
-			raise NameError('This node links to no instance!')
-		nm = filterTableByID(csvData, self.getDataRowIDs(tag))
-		if len(nm) == 0:											# checks if the instances for the node were found
-			raise NameError('The IDs in your node dont match any node in the raw data!')
+	def getSplitEntropy(self, nodeTag, featureTag, value, table):
+		nm = table
+		nm0 = filterTable(table, featureTag, value, False)
+		nm1 = filterTable(table, featureTag, value, True)
+
+		pm00 = atributePct(nm0,table[0].retrieveClassifierTag,0)
+		pm01 = atributePct(nm0,table[0].retrieveClassifierTag,1)
+
+		pm10 = atributePct(nm1,table[0].retrieveClassifierTag,0)
+		pm11 = atributePct(nm1,table[0].retrieveClassifierTag,1)
+
+		entropy = -1* (nm0/nm(pm00*log(pm00,2)+pm01*log(pm01,2)) + nm1/nm(pm10*log(pm10,2)+pm11*log(pm11,2)))
+		return entropy
+
 
 ###############################################################################################
 
@@ -149,49 +157,24 @@ class NodePack():
 	def bestSplit(self, maxEntropy, table):
 		if len(table) == 0:
 			 raise NameError('You are passing an empty table!')
+			 return None
+		else:
+			minEnt = maxEntropy
 
-		minEnt = maxEntropy
+			bestTag = None
+			bestAtribute = None
+			bestValue = None
 
-		for nTag in retrieveListOfNodesByType(NodeType.EDGE):
-			for atribute in table[0].headers:
-				for value in distinctAtributes(table, atribute)
-					entropy = getSplitEntropy(nTag,atribute,value)
-					if entropy < minEnt:
-						bestTag = nTag
-						bestAtribute = atribute
-						bestValue = value
-	return bestTag, bestAtribute, bestValue
+			for nTag in self.retrieveListOfNodesByType(NodeType.EDGE):
+				for atribute in table[0].headers:
+					for value in distinctAtributes(table, atribute):
+						entropy = getSplitEntropy(nTag,atribute,value)
+						if entropy < minEnt:
+							bestTag = nTag
+							bestAtribute = atribute
+							bestValue = value
+			return bestTag, bestAtribute, bestValue
 
-
-
-###############################################################################################
-
-# ENTROPHY ####################################################################################
-
-# Def
-
-# Entry ->
-# Returns ->
-
-def BestSplit():		
-	return 0
-
-
-###############################################################################################
-
-# SPLIT ENTROPHY ##############################################################################
-
-# Def
-
-# Entry ->
-# Returns ->
-
-def SplitEntrophy():		
-	return 0
-
-# Overload for multiple values
-
-###############################################################################################
 
 
 if __name__ == '__main__':
@@ -226,3 +209,5 @@ if __name__ == '__main__':
 	dtree.addNodeType(5, NodeType.EDGE)
 	dtree.addNodeType(6, NodeType.EDGE)
 	dtree.addNodeType(7, NodeType.EDGE)
+
+
