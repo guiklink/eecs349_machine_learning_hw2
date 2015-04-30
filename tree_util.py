@@ -123,6 +123,12 @@ class NodePack():
 		return (-1 * entropy)										# return entrophy
 ###############################################################################################
 
+# GET SPLIT ENTROPY ##################################################################################
+
+# Calulate the best node where a split can be performed
+
+# Entry -> Float (a constant) | DataRow[] (csv data)
+# Returns -> String (tag of the node that will be slip)| String (atribute for spliting) | String or Floar (value for spliting)
 
 	def getSplitEntropy(self, featureTag, value):
 		if self.getDataRowIDs(tag) == None:							# test if DataRows was initialized if not return an error
@@ -131,17 +137,32 @@ class NodePack():
 		if len(nm) == 0:											# checks if the instances for the node were found
 			raise NameError('The IDs in your node dont match any node in the raw data!')
 
+###############################################################################################
+
 # BEST SPLIT ##################################################################################
 
-# Def
+# Calulate the best node where a split can be performed
 
-# Entry ->
-# Returns ->
+# Entry -> Float (a constant) | DataRow[] (csv data)
+# Returns -> String (tag of the node that will be slip)| String (atribute for spliting) | String or Floar (value for spliting)
 
-	def bestSplit(self,epsilon):
-		minEnt = epsilon
+	def bestSplit(self, maxEntropy, table):
+		if len(table) == 0:
+			 raise NameError('You are passing an empty table!')
 
-		#for self.fields.[0]
+		minEnt = maxEntropy
+
+		for nTag in retrieveListOfNodesByType(NodeType.EDGE):
+			for atribute in table[0].headers:
+				for value in distinctAtributes(table, atribute)
+					entropy = getSplitEntropy(nTag,atribute,value)
+					if entropy < minEnt:
+						bestTag = nTag
+						bestAtribute = atribute
+						bestValue = value
+	return bestTag, bestAtribute, bestValue
+
+
 
 ###############################################################################################
 
