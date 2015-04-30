@@ -1,5 +1,10 @@
 # This file contains the the alghorithm for J48
 
+# Importing...
+
+from csv_handler import *
+from math import log
+
 # NODE TYPE #################################################################################
 
 from enum import Enum 					# If your python version doesn't support enum in linux open a terminal and execute "sudo pip install enum34"
@@ -84,7 +89,24 @@ class NodePack():
 
 	def getDataRowIDs(self, tag):
 		return self.fields[self.dataRowIDs][tag]
-		
+
+	def getNodeEntropy(self, tag, csvData):
+		if self.getDataRowIDs(tag) == None:
+			raise NameError('This node links to no instance!')
+		nm = filterTableByID(csvData, self.getDataRowIDs(tag))
+		if len(nm) == 0:
+			raise NameError('The IDs in your node dont match any node in the raw data!')
+
+		classifierTag = nm[0].retrieveClassifierTag()
+		entropy = 0
+		classValues = distinctAtributes(nm,classifierTag)
+		for val in classValues:
+			pct = atributePct(nm,classifierTag,val)
+			entropy += pct * log(pct,2)
+		return (-1 * entropy)
+
+	def getSplitEntropy(self, ):
+		pass
 		
 ###############################################################################################
 

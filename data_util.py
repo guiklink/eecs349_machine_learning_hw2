@@ -77,6 +77,9 @@ class DataRow():											# Data structure for a row of data
 				return f
 		raise NameError('Trying to retrieve from an unexistent column!')	# if tag not found raise an error
 
+	def retrieveClassifierTag(self):
+		return self.features[self.nFeatures - 1].tag
+
 ###############################################################################################
 
 # Table Printer ##############################################################################
