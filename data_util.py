@@ -46,8 +46,8 @@ class DataRow():											# Data structure for a row of data
 	def __init__(self, tagList, valueList, typeList):
 		self.id = valueList[0]								# Unique id of the line (help debugging)
 		self.nFeatures = len(valueList)						# Total number of features per row
-
 		self.features = []									# Creates an array of datatype Feature
+		self.headers = map(str.strip, tagList)				# An array holding the description of each feature
 
 		for i in range(len(valueList)):								# Iterates to each element of the lists provided
 			tmp = Feature(tagList[i], valueList[i], typeList[i])	# Create a Feature datatype
@@ -71,7 +71,7 @@ class DataRow():											# Data structure for a row of data
 			s += f.tag + ","
 		return s[0:-1]
 
-	def retrieve(self, tag):								# retrieve value by tag
+	def retrieve(self, tag):								# retrieve feature by tag
 		for f in self.features:
 			if f.tag == tag:								# if tag found return
 				return f

@@ -73,13 +73,13 @@ class NodePack():
 		return self.fields[self.splitType][tag]
 
 	def addNodeType(self, tag, nodeType):
-		self.fields[self.nodeType].update({tag:nodeType})
+		self.fields[self.nType].update({tag:nodeType})
 
 	def removeNodeType(self, tag):
-		self.fields[self.nodeType].update({tag:None})
+		self.fields[self.nType].update({tag:None})
 
 	def getNodeType(self, tag):
-		return self.fields[self.nodeType][tag]
+		return self.fields[self.nType][tag]
 
 	def addDataRowIDs(self, tag, dataRowIDs):
 		self.fields[self.dataRowIDs].update({tag:dataRowIDs})
@@ -89,6 +89,23 @@ class NodePack():
 
 	def getDataRowIDs(self, tag):
 		return self.fields[self.dataRowIDs][tag]
+
+	def retrieveListOfNodesByType(self, nType):
+		result = []
+		for n in self.fields[self.nType].keys():
+			if self.fields[self.nType][n] == nType:
+				result.append(n)
+
+		return result
+
+###############################################################################################
+
+# ENTROPHY ####################################################################################
+
+# Give back the entrophy of the node
+
+# Entry -> String (NodeTag) | DataRow[] (The whole training data table)
+# Returns -> Float (Entropy)
 
 	def getNodeEntropy(self, tag, csvData):
 		if self.getDataRowIDs(tag) == None:							# test if DataRows was initialized if not return an error
@@ -104,52 +121,95 @@ class NodePack():
 			pct = atributePct(nm,classifierTag,val)					# gets the % of that value in the whole data
 			entropy += pct * log(pct,2)								# calculates and store entropy for the value
 		return (-1 * entropy)										# return entrophy
-
-	def getSplitEntropy(self, featureTag, value):
-		pass
-		
 ###############################################################################################
 
+# GET SPLIT ENTROPY ##################################################################################
+
+# Calulate the best node where a split can be performed
+
+# Entry -> String (node tag) | String (feature to plit) | String (value to split)
+# Returns -> 
+
+	def getSplitEntropy(self, nodeTag, featureTag, value, table):
+		nm = table
+		nm0 = filterTable(table, featureTag, value, False)
+		nm1 = filterTable(table, featureTag, value, True)
+
+		pm00 = atributePct(nm0,table[0].retrieveClassifierTag,0)
+		pm01 = atributePct(nm0,table[0].retrieveClassifierTag,1)
+
+		pm10 = atributePct(nm1,table[0].retrieveClassifierTag,0)
+		pm11 = atributePct(nm1,table[0].retrieveClassifierTag,1)
+
+		entropy = -1* (nm0/nm(pm00*log(pm00,2)+pm01*log(pm01,2)) + nm1/nm(pm10*log(pm10,2)+pm11*log(pm11,2)))
+		return entropy
+
+
+###############################################################################################
 
 # BEST SPLIT ##################################################################################
 
-# Def
+# Calulate the best node where a split can be performed
 
-# Entry ->
-# Returns ->
+# Entry -> Float (a constant) | DataRow[] (csv data)
+# Returns -> String (tag of the node that will be slip)| String (atribute for spliting) | String or Floar (value for spliting)
 
-def BestSplit():		
-	return 0
+	def bestSplit(self, maxEntropy, table):
+		if len(table) == 0:
+			 raise NameError('You are passing an empty table!')
+			 return None
+		else:
+			minEnt = maxEntropy
+
+			bestTag = None
+			bestAtribute = None
+			bestValue = None
+
+			for nTag in self.retrieveListOfNodesByType(NodeType.EDGE):
+				for atribute in table[0].headers:
+					for value in distinctAtributes(table, atribute):
+						entropy = getSplitEntropy(nTag,atribute,value)
+						if entropy < minEnt:
+							bestTag = nTag
+							bestAtribute = atribute
+							bestValue = value
+			return bestTag, bestAtribute, bestValue
 
 
-###############################################################################################
 
-# ENTROPHY ####################################################################################
-
-# Def
-
-# Entry ->
-# Returns ->
-
-def BestSplit():		
-	return 0
+if __name__ == '__main__':
+	global dtree
+	dtree = NodePack()
 
 
-###############################################################################################
 
-# SPLIT ENTROPHY ##############################################################################
+	'''dtree.addNode(1)
+	dtree.addNode(2)
+	dtree.addNode(3)
+	dtree.addNode(4)
+	dtree.addNode(5)
+	dtree.addNode(6)
+	dtree.addNode(7)
 
-# Def
+	dtree.addParent(2, 1)
+	dtree.addParent(3, 1)
+	dtree.addParent(4, 2)
+	dtree.addParent(5, 2)
+	dtree.addParent(6, 3)
+	dtree.addParent(7, 3)
 
-# Entry ->
-# Returns ->
+	dtree.addChild0(1,2)
+	dtree.addChild1(1,3)
+	dtree.addChild0(2,4)
+	dtree.addChild1(2,5)
+	dtree.addChild0(3,6)
+	dtree.addChild1(3,7)
 
-def SplitEntrophy():		
-	return 0
-
-# Overload for multiple values
-
-###############################################################################################
-
+	dtree.addNodeType(2, NodeType.LEAF)
+	dtree.addNodeType(3, NodeType.UNDEF)
+	dtree.addNodeType(4, NodeType.LEAF)
+	dtree.addNodeType(5, NodeType.EDGE)
+	dtree.addNodeType(6, NodeType.EDGE)
+	dtree.addNodeType(7, NodeType.EDGE)'''
 
 
