@@ -81,14 +81,13 @@ def makeTree():
 	dtree.addLeafClassification(2,1)
 	dtree.addLeafClassification(5,0)
 	dtree.addLeafClassification(6,1)
-	dtree.addLeafClassification(7,1)
+	dtree.addLeafClassification(7,0)
 
 	return dtree
 
 tree = makeTree()
 data = makeDummyData()
 dataPre = makeDummyPredictionData()
-
 # def validateTree(tree, dataSet):
 # 	"""Used for validating a learned tree against a validation set, returns percentage accuracy"""
 
