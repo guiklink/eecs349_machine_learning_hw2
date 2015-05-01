@@ -4,15 +4,17 @@ from data_util import *
 
 
 def getRules(tree):
-	Rules = []
+	stop = len(tree.fields[tree.nType].keys())
+	count = 0
 	#for all of the nodes in tree model
 	for i in tree.fields[tree.nType].keys():
+			count+=1
 			# find a leaf
 			if NodeType.LEAF == tree.getNodeType(i):
 				node = i #node=leaf.node
 				Rule= "IF " 
 				leafClass = tree.getLeafClassification(node)
-				Rules.append(Rule)
+				
 				while tree.getParent(node):
 					splitVal = tree.getSplitValue(tree.getParent(node))
 					splitAttribute = tree.getSplitAtribute(tree.getParent(node))
@@ -43,7 +45,18 @@ def getRules(tree):
 							if tree.getParent(node):
 								Rule = Rule + " AND "
 						
-				if leafClass: 
+				if leafClass == 1: 
 					print Rule
-					print "OR"
-	print "THEN TRUE."
+					if NodeType.ROOT == tree.getNodeType(node):
+						print " THEN TRUE."
+					if count != stop:
+						print "OR"
+				if leafClass == 0:
+					print Rule
+					if NodeType.ROOT == tree.getNodeType(node):
+						print " THEN FALSE."
+					if count != stop:
+						print "OR"
+								
+	
+	# print "THEN", output
