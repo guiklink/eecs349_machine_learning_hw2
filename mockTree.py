@@ -78,7 +78,6 @@ def validateTree(tree, dataSet):
 		node = 0
 		for i in tree.fields[tree.nType].keys():
 			if NodeType.ROOT == tree.getNodeType(i):
-				print 'root is equal to ',i
 				node = i #basically an index
 
 			#keep going down the tree until no children exist, then get output classification
@@ -86,12 +85,20 @@ def validateTree(tree, dataSet):
 				splitVal = tree.getSplitValue(node)
 				splitName = tree.getSplitAtribute(node)
 				val = dataPoint.retrieve(splitName).getValue()
-				if val >= splitVal:
-					node = tree.getChild0(node)
-				else:
-					node = tree.getChild1(node)
-				print "So far so good!"
-		print "hit a leaf"
+				if FeatureType.CONTINUOUS == tree.getSplitType(node): 
+					if val >= splitVal:
+						node = tree.getChild0(node)
+					else:
+						node = tree.getChild1(node)
+					
+				elif FeatureType.DISCRETE == tree.getSplitType(node):
+					if val != splitVal:
+						node = tree.getChild0(node)
+					else:
+						node = tree.getChild1(node)
+
+		# print "hit a leaf"
+		
 		#get tree value (true or false)
 		#if treeValue == dataPoint[-1]:
 			#count = count + 1
