@@ -20,13 +20,15 @@ class NodeType(Enum):				# Enumerator for types of data
 
 class NodePack():
 	def __init__(self):
-		self.fields = [{},{},{},{},{},{}]
+		self.fields = [{},{},{},{},{},{},{},{}]
 		self.parent = 0
 		self.child0 = 1
 		self.child1 = 2
 		self.splitType = 3
 		self.nType = 4
 		self.dataRowIDs = 5
+		self.splitAtribute = 6
+		self.splitValue = 7
 	
 	def addNode(self, tag):
 		for i in range(len(self.fields)):
@@ -89,6 +91,24 @@ class NodePack():
 
 	def getDataRowIDs(self, tag):
 		return self.fields[self.dataRowIDs][tag]
+
+	def addSplitAtribute(self, tag, splitAtribute):
+		self.fields[self.splitAtribute].update({tag:splitAtribute})
+
+	def removeSplitAtribute(self, tag):
+		self.fields[self.splitAtribute].update({tag:None})
+
+	def getSplitAtribute(self, tag):
+		return self.fields[self.splitAtribute][tag]
+
+	def addSplitValue(self, tag, splitValue):
+		self.fields[self.splitValue].update({tag:splitValue})
+
+	def removeSplitValue(self, tag):
+		self.fields[self.splitValue].update({tag:None})
+
+	def getSplitValue(self, tag):
+		return self.fields[self.splitValue][tag]
 
 	def retrieveListOfNodesByType(self, nType):
 		result = []
@@ -168,7 +188,7 @@ class NodePack():
 			for nTag in self.retrieveListOfNodesByType(NodeType.EDGE):
 				for atribute in table[0].headers:
 					for value in distinctAtributes(table, atribute):
-						entropy = getSplitEntropy(nTag,atribute,value)
+						entropy = self.getSplitEntropy(nTag,atribute,value,table)
 						if entropy < minEnt:
 							bestTag = nTag
 							bestAtribute = atribute
@@ -179,9 +199,11 @@ class NodePack():
 
 if __name__ == '__main__':
 	global dtree
-	dtree = NodePack()
-
-
+	a = NodePack()
+	a.addNode(1)
+	a.addNodeType(1,NodeType.EDGE)
+	a.addDataRowIDs(1, map(str,range(1,21)))
+	l=importDataCSV("metadata.csv","dummy.csv")
 
 	'''dtree.addNode(1)
 	dtree.addNode(2)
