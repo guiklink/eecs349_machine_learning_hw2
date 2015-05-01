@@ -20,7 +20,7 @@ class NodeType(Enum):				# Enumerator for types of data
 
 class NodePack():
 	def __init__(self):
-		self.fields = [{},{},{},{},{},{},{},{}]
+		self.fields = [{},{},{},{},{},{},{},{},{}]
 		self.parent = 0
 		self.child0 = 1
 		self.child1 = 2
@@ -29,6 +29,7 @@ class NodePack():
 		self.dataRowIDs = 5
 		self.splitAtribute = 6
 		self.splitValue = 7
+		self.leafClassification = 8
 	
 	def addNode(self, tag):
 		for i in range(len(self.fields)):
@@ -109,6 +110,12 @@ class NodePack():
 
 	def getSplitValue(self, tag):
 		return self.fields[self.splitValue][tag]
+
+	def addLeafClassification(self, tag, classification):
+		self.fields[self.leafClassification].update({tag:classification})
+
+	def getLeafClassification(self, tag):
+		return self.fields[self.leafClassification][tag]
 
 	def retrieveListOfNodesByType(self, nType):
 		result = []

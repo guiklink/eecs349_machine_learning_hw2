@@ -27,6 +27,8 @@ def makeTree():
 	dtree.addNode(6)
 	dtree.addNode(7)
 
+
+
 	dtree.addParent(2, 1)
 	dtree.addParent(3, 1)
 	dtree.addParent(4, 3)
@@ -34,12 +36,14 @@ def makeTree():
 	dtree.addParent(6, 4)
 	dtree.addParent(7, 4)
 
+
 	dtree.addChild0(1,2)
 	dtree.addChild1(1,3)
 	dtree.addChild0(3,4)
 	dtree.addChild1(3,5)
 	dtree.addChild0(4,6)
 	dtree.addChild1(4,7)
+
 
 	dtree.addNodeType(1,NodeType.ROOT)
 	dtree.addNodeType(2,NodeType.LEAF)
@@ -54,20 +58,16 @@ def makeTree():
 	dtree.addSplitType(4, FeatureType.DISCRETE)
 
 	dtree.addSplitAtribute(1, "winpercent")
-	dtree.addSplitAtribute(2, "winner")
 	dtree.addSplitAtribute(3, "oppwinpercent")
 	dtree.addSplitAtribute(4, "weather")
-	dtree.addSplitAtribute(5, "winner")
-	dtree.addSplitAtribute(6, "winner")
-	dtree.addSplitAtribute(7, "winner")
 
 	dtree.addSplitValue(1,0.5)
 	dtree.addSplitValue(3,1)
 	dtree.addSplitValue(4,10)
 
-	dtree.addDataRowIDs(1, 1)
-	dtree.addDataRowIDs(1, 2)
-	dtree.addDataRowIDs(1, 3)
+	dtree.addDataRowIDs(1, [1, 2, 3])
+	# dtree.addDataRowIDs(1, 2)
+	# dtree.addDataRowIDs(1, 3)
 	dtree.addDataRowIDs(1, 4)
 	dtree.addDataRowIDs(1, 5)
 	dtree.addDataRowIDs(1, 6)
@@ -87,40 +87,15 @@ def validateTree(tree, dataSet):
 	"""Used for validating a learned tree against a validation set, returns percentage accuracy"""
 
 	count = 0 #used for tracking how many times we've correctly classified our data
+	for i in tree.fields[tree.nType].keys():
+		if NodeType.ROOT == tree.getNodeType(i):
+			node = i # basically an index. Finding starting node
+			print "root node: ", node
+			break
+			
 	for index in range(len(dataSet)):
 		dataPoint = dataSet[index]
 		print "Current dataPoint: ", dataPoint.retrieve('id').getValue()
-		node = 0
-		for i in tree.fields[tree.nType].keys():
-			if NodeType.ROOT == tree.getNodeType(i):
-				node = i #basically an index
-				print "root node: ", node
-				break
-			#keep going down the tree until no children exist, then get output classification
-			# while tree.getNodeType(node) != NodeType.LEAF:
-			# 	splitVal = tree.getSplitValue(node)
-			# 	print "tree split value: ", splitVal
-			# 	splitAttribute = tree.getSplitAtribute(node)
-			# 	print "tree split attribute: ", splitAttribute
-			# 	val = dataPoint.retrieve(splitAttribute).getValue()
-			# 	print "data point value for split attribute: ", val
-			# 	if FeatureType.CONTINUOUS == tree.getSplitType(node): 
-			# 		if val >= splitVal:
-			# 			node = tree.getChild0(node)
-			# 			print "greater than"
-			# 		else:
-			# 			node = tree.getChild1(node)
-			# 			print "lesser than"
-					
-			# 	elif FeatureType.DISCRETE == tree.getSplitType(node):
-			# 		if val != splitVal:
-			# 			node = tree.getChild0(node)
-			# 			print "not equal"
-			# 		else:
-			# 			node = tree.getChild1(node)
-			# 			print "equal"
-	
-		print "node type", tree.getNodeType(node)
 
 		while tree.getNodeType(node) != NodeType.LEAF:
 			splitVal = tree.getSplitValue(node)
@@ -132,21 +107,19 @@ def validateTree(tree, dataSet):
 			if FeatureType.CONTINUOUS == tree.getSplitType(node): 
 				if val >= splitVal:
 					node = tree.getChild0(node)
-					print "node type", tree.getNodeType(node)
 					print "greater than", "going to next node", node
 				else:
 					node = tree.getChild1(node)
 					print "lesser than", "going to next node", node
-					print "node type", tree.getNodeType(node)
+				
 			elif FeatureType.DISCRETE == tree.getSplitType(node):
 				if val != splitVal:
 					node = tree.getChild0(node)
 					print "not equal", " going to next node", node
-					print "node type", tree.getNodeType(node)
 				else:
 					node = tree.getChild1(node)
 					print "equal", "goint to next node", node
-					print "node type", tree.getNodeType(node)
+
 		leafClass = tree.getLeafClassification(node)
 		print "leaf classification: ", leafClass
 		leafAttribute = tree.getSplitAtribute(node)
@@ -192,21 +165,3 @@ if __name__ == '__main__':
 	visit(dtree)
 	graph.write_png('example1_graph.png')
 
-
-
-
-# def visit(dtree, parent=None):
-
-# 	tags = dtree.fields[0].keys()
-# 	for i in range(len(dtree.fields[dtree.parent].keys())):
-# 	# for i in range(3):
-# 		k1 = dtree.fields[dtree.child0][i+1]
-# 		k2 = dtree.fields[dtree.child1][i+1]
-# 		parent = tags[i]
-# 		print k1,k2,parent
-# 		print ""
-# 		if parent and k1:
-# 			draw(parent, k1)
-# 		if parent and k2: 
-# 			draw(parent, k2)
-# 		# visit()
