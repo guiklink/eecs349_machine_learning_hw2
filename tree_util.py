@@ -152,16 +152,35 @@ class NodePack():
 
 	def getSplitEntropy(self, nodeTag, featureTag, value, table):
 		nm = table
-		nm0 = filterTable(table, featureTag, value, False)
-		nm1 = filterTable(table, featureTag, value, True)
+		nm0 = filterTable(table, featureTag, value, None, False)
+		nm1 = filterTable(table, featureTag, value, None,True)
 
-		pm00 = atributePct(nm0,table[0].retrieveClassifierTag,0)
-		pm01 = atributePct(nm0,table[0].retrieveClassifierTag,1)
+		pm00 = atributePct(nm0,table[0].retrieveClassifierTag(),0)
+		if pm00 <= 0:
+			logpm00 = 0
+		else:
+			logpm00 = log(pm00,2) 
 
-		pm10 = atributePct(nm1,table[0].retrieveClassifierTag,0)
-		pm11 = atributePct(nm1,table[0].retrieveClassifierTag,1)
+		pm01 = atributePct(nm0,table[0].retrieveClassifierTag(),1)
+		if pm01 <= 0:
+			logpm01 = 0
+		else:
+			logpm01 = log(pm01,2)
 
-		entropy = -1* (nm0/nm(pm00*log(pm00,2)+pm01*log(pm01,2)) + nm1/nm(pm10*log(pm10,2)+pm11*log(pm11,2)))
+		pm10 = atributePct(nm1,table[0].retrieveClassifierTag(),0)
+		if pm10 <= 0:
+			logpm10 = 0
+		else:
+			logpm10 = log(pm10,2)
+
+		pm11 = atributePct(nm1,table[0].retrieveClassifierTag(),1)
+		if pm11 <= 0:
+			logpm11 = 0
+		else:
+			logpm11 = log(pm11,2)
+
+
+		entropy = -1* (float(len(nm0))/len(nm)*(pm00*logpm00+pm01*logpm01) + float(len(nm1))/len(nm)*(pm10*logpm10+pm11*logpm11))
 		return entropy
 
 
@@ -186,9 +205,13 @@ class NodePack():
 			bestValue = None
 
 			for nTag in self.retrieveListOfNodesByType(NodeType.EDGE):
+				print "nTag = " + str(nTag) 
 				for atribute in table[0].headers:
+					print "atribute = " + str(atribute)
 					for value in distinctAtributes(table, atribute):
+						print "value = " + str(value)
 						entropy = self.getSplitEntropy(nTag,atribute,value,table)
+						print "entropy = " + str(entropy)
 						if entropy < minEnt:
 							bestTag = nTag
 							bestAtribute = atribute
