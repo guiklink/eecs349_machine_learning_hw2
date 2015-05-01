@@ -37,6 +37,9 @@ class Feature():
 	def toString(self):								# returns the Feature in a string format proper for printing
 		return str(self.tag) + " | " + str(self.value) + " | " + str(self.fType)
 
+	def addValue(self, newValue):
+		self.value = newValue
+
 
 ###############################################################################################
 
@@ -47,7 +50,7 @@ class DataRow():											# Data structure for a row of data
 		self.id = valueList[0]								# Unique id of the line (help debugging)
 		self.nFeatures = len(valueList)						# Total number of features per row
 		self.features = []									# Creates an array of datatype Feature
-		self.headers = map(str.strip, tagList)				# An array holding the description of each feature
+		self.headers = (map(str.strip, tagList))[1:]				# An array holding the description of each feature
 
 		for i in range(len(valueList)):								# Iterates to each element of the lists provided
 			tmp = Feature(tagList[i], valueList[i], typeList[i])	# Create a Feature datatype
@@ -78,7 +81,7 @@ class DataRow():											# Data structure for a row of data
 		raise NameError('Trying to retrieve from an unexistent column!')	# if tag not found raise an error
 
 	def retrieveClassifierTag(self):
-		return self.features[self.nFeatures - 1].tag
+		return self.features[self.nFeatures-1].tag
 
 ###############################################################################################
 

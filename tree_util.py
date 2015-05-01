@@ -20,13 +20,16 @@ class NodeType(Enum):				# Enumerator for types of data
 
 class NodePack():
 	def __init__(self):
-		self.fields = [{},{},{},{},{},{}]
+		self.fields = [{},{},{},{},{},{},{},{},{}]
 		self.parent = 0
 		self.child0 = 1
 		self.child1 = 2
 		self.splitType = 3
 		self.nType = 4
 		self.dataRowIDs = 5
+		self.splitAtribute = 6
+		self.splitValue = 7
+		self.leafClassification=8
 
 	def addNode(self, tag):
 		for i in range(len(self.fields)):
@@ -90,6 +93,30 @@ class NodePack():
 	def getDataRowIDs(self, tag):
 		return self.fields[self.dataRowIDs][tag]
 
+	def addSplitAtribute(self, tag, splitAtribute):
+		self.fields[self.splitAtribute].update({tag:splitAtribute})
+
+	def removeSplitAtribute(self, tag):
+		self.fields[self.splitAtribute].update({tag:None})
+
+	def getSplitAtribute(self, tag):
+		return self.fields[self.splitAtribute][tag]
+
+	def addSplitValue(self, tag, splitValue):
+		self.fields[self.splitValue].update({tag:splitValue})
+
+	def removeSplitValue(self, tag):
+		self.fields[self.splitValue].update({tag:None})
+
+	def getSplitValue(self, tag):
+		return self.fields[self.splitValue][tag]
+
+	def addLeafClassification(self, tag, classification):
+		self.fields[self.leafClassification].update({tag:classification})
+
+	def getLeafClassification(self, tag):
+		return self.fields[self.leafClassification][tag]
+
 	def retrieveListOfNodesByType(self, nType):
 		result = []
 		for n in self.fields[self.nType].keys():
@@ -131,17 +158,34 @@ class NodePack():
 # Returns -> 
 
 	def getSplitEntropy(self, nodeTag, featureTag, value, table):
-		nm = table
-		nm0 = filterTable(table, featureTag, value, False)
-		nm1 = filterTable(table, featureTag, value, True)
+		nm = table#instances belonging to a node
+		# print 'nm: '+ str(len(nm)) 
+		nm0 = filterTable(table, featureTag, value,None,False)#instances belonging to a node and  not satisfying the discreate featre and value
+		#print 'nm0: '+ str(len(nm0)) 
+		nm1 = filterTable(table, featureTag, value,None,True)#instances belonging to a node and  that satisfy the discreate feature and value
+		# print 'nm1: '+ str(len(nm1))
+		# print 'winners nm1: ' + str(len(filterTable(nm1,'winner',1)))
+		pm00 = float(len(filterTable(nm0,'winner',0)))/len(nm0)#percentage of losers in the instances not satisfying the feature and value
+		# print 'pm00: '+ str(pm00)
+		pm01 = float(len(filterTable(nm0,'winner',1)))/len(nm0)#percentage of winners in the instances not satisfying the feature and value
+		# print 'pm01: '+ str(pm01)
+		pm10 = float(len(filterTable(nm1,'winner',0)))/len(nm1)#percentage of losers in the instances satisfying the feature and value
+		# print 'pm10: '+ str(pm10)
+		pm11 = float(len(filterTable(nm1,'winner',1)))/len(nm1)#percentage of winners in the instances satisfying the feature and value
+		# print 'pm11: '+ str(pm11)
 
-		pm00 = atributePct(nm0,table[0].retrieveClassifierTag,0)
-		pm01 = atributePct(nm0,table[0].retrieveClassifierTag,1)
 
-		pm10 = atributePct(nm1,table[0].retrieveClassifierTag,0)
-		pm11 = atributePct(nm1,table[0].retrieveClassifierTag,1)
-
-		entropy = -1* (nm0/nm(pm00*log(pm00,2)+pm01*log(pm01,2)) + nm1/nm(pm10*log(pm10,2)+pm11*log(pm11,2)))
+		#workaround forr mathematically undefined log(0)
+		if pm00==0:
+			pm00=0.001
+		if pm01==0:
+			pm01=0.001
+		if pm10==0:
+			pm10=0.001	
+		if pm11==0:
+			pm11=0.001					
+		entropy = -1 *( len(nm0)/float(len(nm))*(pm00*log(pm00,2)+pm01*log(pm01,2)) + len(nm1)/float(len(nm))*(pm10*log(pm10,2)+pm11*log(pm11,2)))
+		print 'entropy'+ str(entropy)
 		return entropy
 
 
@@ -165,49 +209,70 @@ class NodePack():
 			bestAtribute = None
 			bestValue = None
 
-			for nTag in self.retrieveListOfNodesByType(NodeType.EDGE):
-				for atribute in table[0].headers:
-					for value in distinctAtributes(table, atribute):
-						entropy = getSplitEntropy(nTag,atribute,value)
-						if entropy < minEnt:
-							bestTag = nTag
-							bestAtribute = atribute
-							bestValue = value
-			return bestTag, bestAtribute, bestValue
+			atribute = 0 #initialize atribute to an ineligible value
+
+			#for nTag in self.retrieveListOfNodesByType(NodeType.EDGE):
+			nTag = 1
+			print 'nTag: '+ str(nTag)
+			#for atribute in table[0].headers:
+			atribute = 'numinjured'
+			#if (atribute != 'winner' and atribute != 'id'):
+			print 'attribute: '+ str(atribute)
+			for value in distinctAtributes(table, atribute):
+			#value =  2
+				print 'value: '+ str(value)
+				entropy = self.getSplitEntropy(nTag,atribute,value,table)
+				print 'entropy: ' + str(entropy)
+				if entropy < minEnt:
+					print'entropy < minENT'
+					bestTag = nTag
+					bestAtribute = atribute
+					bestValue = value
+		return bestTag, bestAtribute, bestValue
 
 
 
 if __name__ == '__main__':
-	global dtree
-	dtree = NodePack()
+	# global dtree
+	# dtree = NodePack()
+	# l=importDataCSV("metadata.csv","dummy.csv")
+	# a=NodePack()
+	# a.addNode(1)
+	# a.addNode(2)
+	# a.addDataRowIDs(1,map(str,range(1,15)))
+	# a.addDataRowIDs(2,map(str,range(15,21)))
+	# a.addNodeType(1,NodeType.EDGE)
+	# a.addNodeType(2,NodeType.EDGE)
 
-	dtree.addNode(1)
-	dtree.addNode(2)
-	dtree.addNode(3)
-	dtree.addNode(4)
-	dtree.addNode(5)
-	dtree.addNode(6)
-	dtree.addNode(7)
 
-	dtree.addParent(2, 1)
-	dtree.addParent(3, 1)
-	dtree.addParent(4, 2)
-	dtree.addParent(5, 2)
-	dtree.addParent(6, 3)
-	dtree.addParent(7, 3)
 
-	dtree.addChild0(1,2)
-	dtree.addChild1(1,3)
-	dtree.addChild0(2,4)
-	dtree.addChild1(2,5)
-	dtree.addChild0(3,6)
-	dtree.addChild1(3,7)
+	# dtree.addNode(1)
+	# dtree.addNode(2)
+	# dtree.addNode(3)
+	# dtree.addNode(4)
+	# dtree.addNode(5)
+	# dtree.addNode(6)
+	# dtree.addNode(7)
 
-	dtree.addNodeType(2, NodeType.LEAF)
-	dtree.addNodeType(3, NodeType.UNDEF)
-	dtree.addNodeType(4, NodeType.LEAF)
-	dtree.addNodeType(5, NodeType.EDGE)
-	dtree.addNodeType(6, NodeType.EDGE)
-	dtree.addNodeType(7, NodeType.EDGE)
+	# dtree.addParent(2, 1)
+	# dtree.addParent(3, 1)
+	# dtree.addParent(4, 2)
+	# dtree.addParent(5, 2)
+	# dtree.addParent(6, 3)
+	# dtree.addParent(7, 3)
+
+	# dtree.addChild0(1,2)
+	# dtree.addChild1(1,3)
+	# dtree.addChild0(2,4)
+	# dtree.addChild1(2,5)
+	# dtree.addChild0(3,6)
+	# dtree.addChild1(3,7)
+
+	# dtree.addNodeType(2, NodeType.LEAF)
+	# dtree.addNodeType(3, NodeType.UNDEF)
+	# dtree.addNodeType(4, NodeType.LEAF)
+	# dtree.addNodeType(5, NodeType.EDGE)
+	# dtree.addNodeType(6, NodeType.EDGE)
+	# dtree.addNodeType(7, NodeType.EDGE)
 
 
