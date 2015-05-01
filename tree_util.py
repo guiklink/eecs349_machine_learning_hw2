@@ -145,43 +145,31 @@ class NodePack():
 
 # GET SPLIT ENTROPY ##################################################################################
 
-# Calulate the best node where a split can be performed
+# Calulate the entropy of each node possible value for spliting
 
 # Entry -> String (node tag) | String (feature to plit) | String (value to split)
-# Returns -> 
+# Returns -> Float (entropy)
 
 	def getSplitEntropy(self, nodeTag, featureTag, value, table):
 		nm = table
-		nm0 = filterTable(table, featureTag, value, None, False)
-		nm1 = filterTable(table, featureTag, value, None,True)
+		classifier = table[0].retrieveClassifierTag()
 
-		pm00 = atributePct(nm0,table[0].retrieveClassifierTag(),0)
-		if pm00 <= 0:
-			logpm00 = 0
-		else:
-			logpm00 = log(pm00,2) 
+		nmj = []
 
-		pm01 = atributePct(nm0,table[0].retrieveClassifierTag(),1)
-		if pm01 <= 0:
-			logpm01 = 0
-		else:
-			logpm01 = log(pm01,2)
+		possibleClassifiers = distinctAtributes(nm, classifier)
 
-		pm10 = atributePct(nm1,table[0].retrieveClassifierTag(),0)
-		if pm10 <= 0:
-			logpm10 = 0
-		else:
-			logpm10 = log(pm10,2)
+		splitEntropy = 0
 
-		pm11 = atributePct(nm1,table[0].retrieveClassifierTag(),1)
-		if pm11 <= 0:
-			logpm11 = 0
-		else:
-			logpm11 = log(pm11,2)
-
-
-		entropy = -1* (float(len(nm0))/len(nm)*(pm00*logpm00+pm01*logpm01) + float(len(nm1))/len(nm)*(pm10*logpm10+pm11*logpm11))
-		return entropy
+		for nBranch in range(2):							# binary split only
+			nmj.append(filterTable(table, featureTag, value, None, nBranch)) # LAST ARGUMENT must be a boolean
+			for classifierValues in possibleClassifiers:
+				prob = atributePct(nmj[nBranch],classifier,classifierValues)
+				if prob <= 0:
+					probLog = 0
+				else:
+					probLog = log(prob,2)
+				splitEntropy += (float(len(nmj[nBranch])) / len(nm)) * prob * probLog  
+		return -1 * splitEntropy
 
 
 ###############################################################################################
