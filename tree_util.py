@@ -4,6 +4,7 @@
 
 from csv_handler import *
 from math import log
+import numpy as np
 
 # NODE TYPE #################################################################################
 
@@ -151,6 +152,9 @@ class NodePack():
 # Returns -> Float (entropy)
 
 	def getSplitEntropy(self, nodeTag, featureTag, value, table):
+		
+		featureType = table[0].retrieve(featureTag).fType
+
 		nm = table
 		classifier = table[0].retrieveClassifierTag()
 
@@ -161,7 +165,17 @@ class NodePack():
 		splitEntropy = 0
 
 		for nBranch in range(2):							# binary split only
-			nmj.append(filterTable(table, featureTag, value, None, nBranch)) # LAST ARGUMENT must be a boolean
+			if featureType == FeatureType.DISCRETE:
+				nmj.append(filterTable(nm, featureTag, value, None, nBranch)) # LAST ARGUMENT must be a boolean
+			elif featureType == FeatureType.CONTINUOUS:
+				if(value == None):
+					value = np.median(retrieveDataFromColumn(nm,featureTag))
+				maxValue = retrieveMaxFromColumn(nm,featureTag)
+				minValue = retrieveMinFromColumn(nm,featureTag)
+				if(value == maxValue or value == minValue):
+					return 400 # No information gain if children are empty
+				nmj.append(filterTable(nm, featureTag, value, maxValue, nBranch)) # LAST ARGUMENT must be a boolean
+				print len(nmj)
 			for classifierValues in possibleClassifiers:
 				prob = atributePct(nmj[nBranch],classifier,classifierValues)
 				if prob <= 0:
@@ -170,7 +184,6 @@ class NodePack():
 					probLog = log(prob,2)
 				splitEntropy += (float(len(nmj[nBranch])) / len(nm)) * prob * probLog  
 		return -1 * splitEntropy
-
 
 ###############################################################################################
 
@@ -206,7 +219,7 @@ class NodePack():
 							bestValue = value
 			return bestTag, bestAtribute, bestValue
 
-
+###############################################################################################
 
 if __name__ == '__main__':
 	global dtree
