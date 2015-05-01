@@ -151,7 +151,15 @@ def validateTree(tree, dataSet):
 		print "leaf classification: ", leafClass
 		leafAttribute = tree.getSplitAtribute(node)
 		print "leaf attribute: ", leafAttribute
-			# if dataPoint.retrieve("winner") 
+		print "datapoint classification: ",dataPoint.retrieve(leafAttribute).getValue()
+		if dataPoint.retrieve(leafAttribute).getValue() == leafClass:
+			print "correctly classified"
+			count = count + 1
+		else: 
+			print "misclassification"
+
+	print "accuracy is: ", float(100*count)/len(dataSet)
+
 			# if the value at dataPoint.retrieve(leafAttribute).getValue()
 			# is the same as the leafClass, increase count by one. 
 		# print "hit a leaf"
