@@ -17,6 +17,11 @@ def makeDummyData():
 	data=importDataCSV("metadata.csv","minidata.csv")
 	return data
 
+def makeDummyPredictionData():
+	"""Makes dummy data to predict for.  This dataset is intentionally marked wrong and we expect classification accuracy of 67%"""
+	data=importDataCSV("metadata.csv","minipredict.csv")
+	return data	
+
 def makeTree():
 	"""Makes a dummy tree"""
 	dtree.addNode(1)
@@ -82,6 +87,7 @@ def makeTree():
 
 tree = makeTree()
 data = makeDummyData()
+dataPre = makeDummyPredictionData()
 
 # def validateTree(tree, dataSet):
 # 	"""Used for validating a learned tree against a validation set, returns percentage accuracy"""
