@@ -83,94 +83,60 @@ def makeTree():
 tree = makeTree()
 data = makeDummyData()
 
-def validateTree(tree, dataSet):
-	"""Used for validating a learned tree against a validation set, returns percentage accuracy"""
+# def validateTree(tree, dataSet):
+# 	"""Used for validating a learned tree against a validation set, returns percentage accuracy"""
 
-	count = 0 #used for tracking how many times we've correctly classified our data
-	for index in range(len(dataSet)):
-		dataPoint = dataSet[index]
-		print "Current dataPoint: ", dataPoint.retrieve('id').getValue()
-		node = 0
-		for i in tree.fields[tree.nType].keys():
-			if NodeType.ROOT == tree.getNodeType(i):
-				node = i #basically an index
-				print "root node: ", node
-				break
-			#keep going down the tree until no children exist, then get output classification
-			# while tree.getNodeType(node) != NodeType.LEAF:
-			# 	splitVal = tree.getSplitValue(node)
-			# 	print "tree split value: ", splitVal
-			# 	splitAttribute = tree.getSplitAtribute(node)
-			# 	print "tree split attribute: ", splitAttribute
-			# 	val = dataPoint.retrieve(splitAttribute).getValue()
-			# 	print "data point value for split attribute: ", val
-			# 	if FeatureType.CONTINUOUS == tree.getSplitType(node): 
-			# 		if val >= splitVal:
-			# 			node = tree.getChild0(node)
-			# 			print "greater than"
-			# 		else:
-			# 			node = tree.getChild1(node)
-			# 			print "lesser than"
-					
-			# 	elif FeatureType.DISCRETE == tree.getSplitType(node):
-			# 		if val != splitVal:
-			# 			node = tree.getChild0(node)
-			# 			print "not equal"
-			# 		else:
-			# 			node = tree.getChild1(node)
-			# 			print "equal"
-	
-		print "node type", tree.getNodeType(node)
+# 	count = 0 #used for tracking how many times we've correctly classified our data
+# 	for index in range(len(dataSet)):
+# 		dataPoint = dataSet[index]
+# 		print "Current dataPoint: ", dataPoint.retrieve('id').getValue()
+# 		node = 0
+# 		for i in tree.fields[tree.nType].keys():
+# 			if NodeType.ROOT == tree.getNodeType(i):
+# 				node = i #basically an index
+# 				print "root node: ", node
+# 				break
+# 			#keep going down the tree until no children exist, then get output classification
 
-		while tree.getNodeType(node) != NodeType.LEAF:
-			splitVal = tree.getSplitValue(node)
-			print "tree split value: ", splitVal
-			splitAttribute = tree.getSplitAtribute(node)
-			print "tree split attribute: ", splitAttribute
-			val = dataPoint.retrieve(splitAttribute).getValue()
-			print "data point value for split attribute: ", val
-			if FeatureType.CONTINUOUS == tree.getSplitType(node): 
-				if val >= splitVal:
-					node = tree.getChild0(node)
-					print "node type", tree.getNodeType(node)
-					print "greater than", "going to next node", node
-				else:
-					node = tree.getChild1(node)
-					print "lesser than", "going to next node", node
-					print "node type", tree.getNodeType(node)
-			elif FeatureType.DISCRETE == tree.getSplitType(node):
-				if val != splitVal:
-					node = tree.getChild0(node)
-					print "not equal", " going to next node", node
-					print "node type", tree.getNodeType(node)
-				else:
-					node = tree.getChild1(node)
-					print "equal", "goint to next node", node
-					print "node type", tree.getNodeType(node)
-		leafClass = tree.getLeafClassification(node)
-		print "leaf classification: ", leafClass
-		leafAttribute = tree.getSplitAtribute(node)
-		print "leaf attribute: ", leafAttribute
-		print "datapoint classification: ",dataPoint.retrieve(leafAttribute).getValue()
-		if dataPoint.retrieve(leafAttribute).getValue() == leafClass:
-			print "correctly classified"
-			count = count + 1
-		else: 
-			print "misclassification"
+# 		print "node type", tree.getNodeType(node)
 
-	print "accuracy is: ", float(100*count)/len(dataSet)
+# 		while tree.getNodeType(node) != NodeType.LEAF:
+# 			splitVal = tree.getSplitValue(node)
+# 			print "tree split value: ", splitVal
+# 			splitAttribute = tree.getSplitAtribute(node)
+# 			print "tree split attribute: ", splitAttribute
+# 			val = dataPoint.retrieve(splitAttribute).getValue()
+# 			print "data point value for split attribute: ", val
+# 			if FeatureType.CONTINUOUS == tree.getSplitType(node): 
+# 				if val >= splitVal:
+# 					node = tree.getChild0(node)
+# 					print "node type", tree.getNodeType(node)
+# 					print "greater than", "going to next node", node
+# 				else:
+# 					node = tree.getChild1(node)
+# 					print "lesser than", "going to next node", node
+# 					print "node type", tree.getNodeType(node)
+# 			elif FeatureType.DISCRETE == tree.getSplitType(node):
+# 				if val != splitVal:
+# 					node = tree.getChild0(node)
+# 					print "not equal", " going to next node", node
+# 					print "node type", tree.getNodeType(node)
+# 				else:
+# 					node = tree.getChild1(node)
+# 					print "equal", "goint to next node", node
+# 					print "node type", tree.getNodeType(node)
+# 		leafClass = tree.getLeafClassification(node)
+# 		print "leaf classification: ", leafClass
+# 		leafAttribute = tree.getSplitAtribute(node)
+# 		print "leaf attribute: ", leafAttribute
+# 		print "datapoint classification: ",dataPoint.retrieve(leafAttribute).getValue()
+# 		if dataPoint.retrieve(leafAttribute).getValue() == leafClass:
+# 			print "correctly classified"
+# 			count = count + 1
+# 		else: 
+# 			print "misclassification"
 
-			# if the value at dataPoint.retrieve(leafAttribute).getValue()
-			# is the same as the leafClass, increase count by one. 
-		# print "hit a leaf"
-		# t = filterTableByID()
-
-		#get tree value (true or false)
-		#if treeValue == dataPoint[-1]:
-			#count = count + 1
-	#print "accuracy is",100*count/len(dataSet)
-
-
+# 	print "accuracy is: ", float(100*count)/len(dataSet)
 
 
 def draw(parent_name, child_name):
@@ -200,21 +166,3 @@ if __name__ == '__main__':
 	visit(dtree)
 	graph.write_png('example1_graph.png')
 
-
-
-
-# def visit(dtree, parent=None):
-
-# 	tags = dtree.fields[0].keys()
-# 	for i in range(len(dtree.fields[dtree.parent].keys())):
-# 	# for i in range(3):
-# 		k1 = dtree.fields[dtree.child0][i+1]
-# 		k2 = dtree.fields[dtree.child1][i+1]
-# 		parent = tags[i]
-# 		print k1,k2,parent
-# 		print ""
-# 		if parent and k1:
-# 			draw(parent, k1)
-# 		if parent and k2: 
-# 			draw(parent, k2)
-# 		# visit()
