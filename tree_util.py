@@ -117,7 +117,7 @@ class NodePack():
 			if self.fields[self.nType][n] == nType:
 				result.append(n)
 
-		return result
+		return result 								# return a list of node tags
 
 ###############################################################################################
 
@@ -175,7 +175,6 @@ class NodePack():
 				if(value == maxValue or value == minValue):
 					return 400 # No information gain if children are empty
 				nmj.append(filterTable(nm, featureTag, value, maxValue, nBranch)) # LAST ARGUMENT must be a boolean
-				print len(nmj)
 			for classifierValues in possibleClassifiers:
 				prob = atributePct(nmj[nBranch],classifier,classifierValues)
 				if prob <= 0:
@@ -183,7 +182,7 @@ class NodePack():
 				else:
 					probLog = log(prob,2)
 				splitEntropy += (float(len(nmj[nBranch])) / len(nm)) * prob * probLog  
-		return -1 * splitEntropy
+		return -1 * splitEntropy, nmj
 
 ###############################################################################################
 
@@ -206,56 +205,21 @@ class NodePack():
 			bestValue = None
 
 			for nTag in self.retrieveListOfNodesByType(NodeType.EDGE):
-				print "nTag = " + str(nTag) 
+				#print "nTag = " + str(nTag) 
 				for atribute in table[0].headers:
-					print "atribute = " + str(atribute)
+					#print "atribute = " + str(atribute)
 					for value in distinctAtributes(table, atribute):
-						print "value = " + str(value)
-						entropy = self.getSplitEntropy(nTag,atribute,value,table)
-						print "entropy = " + str(entropy)
+						#print "value = " + str(value)
+						entropy, nmj = self.getSplitEntropy(nTag,atribute,value,table)
+						#print "entropy = " + str(entropy)
 						if entropy < minEnt:
 							bestTag = nTag
 							bestAtribute = atribute
 							bestValue = value
-			return bestTag, bestAtribute, bestValue
+			return bestTag, bestAtribute, bestValue, nmj
 
 ###############################################################################################
 
-if __name__ == '__main__':
-	global dtree
-	a = NodePack()
-	a.addNode(1)
-	a.addNodeType(1,NodeType.EDGE)
-	a.addDataRowIDs(1, map(str,range(1,21)))
-	l=importDataCSV("metadata.csv","dummy.csv")
 
-	'''dtree.addNode(1)
-	dtree.addNode(2)
-	dtree.addNode(3)
-	dtree.addNode(4)
-	dtree.addNode(5)
-	dtree.addNode(6)
-	dtree.addNode(7)
-
-	dtree.addParent(2, 1)
-	dtree.addParent(3, 1)
-	dtree.addParent(4, 2)
-	dtree.addParent(5, 2)
-	dtree.addParent(6, 3)
-	dtree.addParent(7, 3)
-
-	dtree.addChild0(1,2)
-	dtree.addChild1(1,3)
-	dtree.addChild0(2,4)
-	dtree.addChild1(2,5)
-	dtree.addChild0(3,6)
-	dtree.addChild1(3,7)
-
-	dtree.addNodeType(2, NodeType.LEAF)
-	dtree.addNodeType(3, NodeType.UNDEF)
-	dtree.addNodeType(4, NodeType.LEAF)
-	dtree.addNodeType(5, NodeType.EDGE)
-	dtree.addNodeType(6, NodeType.EDGE)
-	dtree.addNodeType(7, NodeType.EDGE)'''
 
 
