@@ -23,7 +23,7 @@ dtree.addNode(7)
 
 dtree.addParent(2, 1)
 dtree.addParent(3, 1)
-dtree.addParent(4, 3)
+dtree.addParent(4, 3)d
 dtree.addParent(5, 3)
 dtree.addParent(6, 4)
 dtree.addParent(7, 4)
@@ -45,7 +45,19 @@ dtree.addNodeType(7,NodeType.LEAF)
 dtree.addNodeType(3,NodeType.EDGE)
 dtree.addNodeType(4,NodeType.EDGE)
 
-dtree.add
+dtree.addSplitType(1, FeatureType.CONTINUOUS)
+dtree.addSplitType(3, FeatureType.DISCRETE)
+dtree.addSplitType(4, FeatureType.CONTINUOUS)
+
+##### COME BACK TO THIS####
+#
+# dtree.addSplitAttribute(1, )
+#dtree.addSplitValue(1, )
+#####
+
+def validateTree(tree, dataSet):
+	
+
 
 
 
