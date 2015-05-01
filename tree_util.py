@@ -181,7 +181,9 @@ if __name__ == '__main__':
 	global dtree
 	dtree = NodePack()
 
-	dtree.addNode(1)
+
+
+	'''dtree.addNode(1)
 	dtree.addNode(2)
 	dtree.addNode(3)
 	dtree.addNode(4)
@@ -208,6 +210,6 @@ if __name__ == '__main__':
 	dtree.addNodeType(4, NodeType.LEAF)
 	dtree.addNodeType(5, NodeType.EDGE)
 	dtree.addNodeType(6, NodeType.EDGE)
-	dtree.addNodeType(7, NodeType.EDGE)
+	dtree.addNodeType(7, NodeType.EDGE)'''
 
 
