@@ -3,6 +3,7 @@
 # 
 from tree_util import *
 from draw_tree import *
+from data_util import *
 import pydot
 
 
@@ -10,32 +11,43 @@ graph = pydot.Dot(graph_type='graph')
 
 dtree = NodePack()
 
-dtree.addNode("root")
-dtree.addNode("child")
+dtree.addNode(1)
+dtree.addNode(2)
 dtree.addNode(3)
 dtree.addNode(4)
 dtree.addNode(5)
 dtree.addNode(6)
 dtree.addNode(7)
-dtree.addNode("leaf")
 
 
-dtree.addParent("child", "root")
-dtree.addParent(3, "root")
-dtree.addParent(4, "child")
-dtree.addParent(5, "child")
-dtree.addParent(6, 3)
-dtree.addParent(7, 3)
-dtree.addParent("leaf", 7)
+
+dtree.addParent(2, 1)
+dtree.addParent(3, 1)
+dtree.addParent(4, 3)
+dtree.addParent(5, 3)
+dtree.addParent(6, 4)
+dtree.addParent(7, 4)
 
 
-dtree.addChild0("root","child")
-dtree.addChild1("root",3)
-dtree.addChild0("child",4)
-dtree.addChild1("child",5)
-dtree.addChild0(3,6)
-dtree.addChild1(3,7)
-dtree.addChild1(7,"leaf")
+dtree.addChild0(1,2)
+dtree.addChild1(1,3)
+dtree.addChild0(3,4)
+dtree.addChild1(3,5)
+dtree.addChild0(4,6)
+dtree.addChild1(4,7)
+
+
+dtree.addNodeType(1,NodeType.ROOT)
+dtree.addNodeType(2,NodeType.LEAF)
+dtree.addNodeType(5,NodeType.LEAF)
+dtree.addNodeType(6,NodeType.LEAF)
+dtree.addNodeType(7,NodeType.LEAF)
+dtree.addNodeType(3,NodeType.EDGE)
+dtree.addNodeType(4,NodeType.EDGE)
+
+dtree.add
+
+
 
 def draw(parent_name, child_name):
 	edge = pydot.Edge(parent_name, child_name)
