@@ -11,52 +11,91 @@ graph = pydot.Dot(graph_type='graph')
 
 dtree = NodePack()
 
-dtree.addNode(1)
-dtree.addNode(2)
-dtree.addNode(3)
-dtree.addNode(4)
-dtree.addNode(5)
-dtree.addNode(6)
-dtree.addNode(7)
+def makeDummyData():
+	"""Makes dummy data to validate against.  This dataset is intentionally marked wrong and we expect classification accuracy of 67%"""
+	data=importDataCSV("metadata.csv","minidata.csv")
+	return data
+
+def makeTree():
+	"""Makes a dummy tree"""
+	dtree.addNode(1)
+	dtree.addNode(2)
+	dtree.addNode(3)
+	dtree.addNode(4)
+	dtree.addNode(5)
+	dtree.addNode(6)
+	dtree.addNode(7)
 
 
 
-dtree.addParent(2, 1)
-dtree.addParent(3, 1)
-dtree.addParent(4, 3)d
-dtree.addParent(5, 3)
-dtree.addParent(6, 4)
-dtree.addParent(7, 4)
+	dtree.addParent(2, 1)
+	dtree.addParent(3, 1)
+	dtree.addParent(4, 3)
+	dtree.addParent(5, 3)
+	dtree.addParent(6, 4)
+	dtree.addParent(7, 4)
 
 
-dtree.addChild0(1,2)
-dtree.addChild1(1,3)
-dtree.addChild0(3,4)
-dtree.addChild1(3,5)
-dtree.addChild0(4,6)
-dtree.addChild1(4,7)
+	dtree.addChild0(1,2)
+	dtree.addChild1(1,3)
+	dtree.addChild0(3,4)
+	dtree.addChild1(3,5)
+	dtree.addChild0(4,6)
+	dtree.addChild1(4,7)
 
 
-dtree.addNodeType(1,NodeType.ROOT)
-dtree.addNodeType(2,NodeType.LEAF)
-dtree.addNodeType(5,NodeType.LEAF)
-dtree.addNodeType(6,NodeType.LEAF)
-dtree.addNodeType(7,NodeType.LEAF)
-dtree.addNodeType(3,NodeType.EDGE)
-dtree.addNodeType(4,NodeType.EDGE)
+	dtree.addNodeType(1,NodeType.ROOT)
+	dtree.addNodeType(2,NodeType.LEAF)
+	dtree.addNodeType(5,NodeType.LEAF)
+	dtree.addNodeType(6,NodeType.LEAF)
+	dtree.addNodeType(7,NodeType.LEAF)
+	dtree.addNodeType(3,NodeType.EDGE)
+	dtree.addNodeType(4,NodeType.EDGE)
 
-dtree.addSplitType(1, FeatureType.CONTINUOUS)
-dtree.addSplitType(3, FeatureType.DISCRETE)
-dtree.addSplitType(4, FeatureType.CONTINUOUS)
+	dtree.addSplitType(1, FeatureType.CONTINUOUS)
+	dtree.addSplitType(3, FeatureType.CONTINUOUS)
+	dtree.addSplitType(4, FeatureType.DISCRETE)
 
-##### COME BACK TO THIS####
-#
-# dtree.addSplitAttribute(1, )
-#dtree.addSplitValue(1, )
-#####
+	dtree.addSplitAtribute(1, "winpercent")
+	dtree.addSplitAtribute(3, "oppwinpercent")
+	dtree.addSplitAtribute(4, "weather")
+
+	dtree.addSplitValue(1,0.5)
+	dtree.addSplitValue(3,1)
+	dtree.addSplitValue(4,10)
+
+	return dtree
+
+tree = makeTree()
+data = makeDummyData()
 
 def validateTree(tree, dataSet):
-	
+	"""Used for validating a learned tree against a validation set, returns percentage accuracy"""
+
+	count = 0 #used for tracking how many times we've correctly classified our data
+	for index in range(len(dataSet)):
+		dataPoint = dataSet[index]
+		node = 0
+		for i in tree.fields[tree.nType].keys():
+			if NodeType.ROOT == tree.getNodeType(i):
+				print 'root is equal to ',i
+				node = i #basically an index
+
+			#keep going down the tree until no children exist, then get output classification
+			while tree.getNodeType(node) != NodeType.LEAF:
+				splitVal = tree.getSplitValue(node)
+				splitName = tree.getSplitAtribute(node)
+				val = dataPoint.retrieve(splitName).getValue()
+				if val >= splitVal:
+					node = tree.getChild0(node)
+				else:
+					node = tree.getChild1(node)
+				print "So far so good!"
+		print "hit a leaf"
+		#get tree value (true or false)
+		#if treeValue == dataPoint[-1]:
+			#count = count + 1
+	#print "accuracy is",100*count/len(dataSet)
 
 
 
