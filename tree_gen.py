@@ -72,7 +72,7 @@ def BuildTree(nodePack, rawTable):
 		print '>NODE ' + str(nodeCount)
 
 		edgeNodes = nodePack.retrieveListOfNodesByType(NodeType.EDGE)
-		'''
+
 		print '\n\nAll nodes'
 		print nodePack.fields[0].keys()
 		print '\n\n ****** ROOT'
@@ -84,15 +84,15 @@ def BuildTree(nodePack, rawTable):
 		print '\n\n ****** ALL EDGE NODES'
 		print nodePack.retrieveNodesByType(NodeType.EDGE)
 
-		print '\n\n ****** ALL EDGE UNDEF'
+		print '\n\n ****** ALL UNDEF NODES'
 		print nodePack.retrieveNodesByType(NodeType.UNDEF)
 		
 		nodePack.printNodePack()
 
-		w=input('\n\nWaiting... ')'''
+		# w=input('\n\nWaiting... ')
 
 		for nodeTag in edgeNodes:
-			if nodePack.getNodeEntropy(nodeTag, rawTable) < 0.5:
+			if nodePack.getNodeEntropy(nodeTag, rawTable) < 0.2:
 				#print '******** CREATING LEAF*****************'
 				#print nodeTag
 				nodePack.addNodeType(nodeTag,NodeType.LEAF)

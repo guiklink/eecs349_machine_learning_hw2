@@ -200,7 +200,10 @@ def retrieveMaxFromColumn(table, column):
 	else:
 		l = retrieveDataFromColumn(table,column)
 		l = filter(lambda a: a != None, l)
-		return max(l)
+		if l!=[]:
+			return max(l)
+		else:
+			return 0
 
 ###############################################################################################
 
@@ -217,7 +220,10 @@ def retrieveMinFromColumn(table, column):
 	else:
 		l = retrieveDataFromColumn(table,column)
 		l = filter(lambda a: a != None, l)
-		return min(l)
+		if l!=[]:
+			return min(l)
+		else:
+			return 0
 
 ###############################################################################################
 

@@ -190,21 +190,28 @@ class NodePack():
 				nmj.append(filterTable(nm, featureTag, value, None, nBranch)) # LAST ARGUMENT must be a boolean
 			elif featureType == FeatureType.CONTINUOUS:
 				if(value == None):
-					value = np.median(retrieveDataFromColumn(nm,featureTag))
-				maxValue = retrieveMaxFromColumn(nm,featureTag)
-				minValue = retrieveMinFromColumn(nm,featureTag)
+					return 400, [[],[]]
+					# value = np.median(retrieveDataFromColumn(nm,featureTag))
+				if nm==[]:
+					maxValue=0
+					minValue=0
+				else:
+					maxValue = retrieveMaxFromColumn(nm,featureTag)
+					minValue = retrieveMinFromColumn(nm,featureTag)
 
 				if(value == maxValue or value == minValue):
 					return 400, [[],[]] # No information gain if children are empty
 				nmj.append(filterTable(nm, featureTag, value, maxValue, nBranch)) # LAST ARGUMENT must be a boolean
-
-			for classifierValues in possibleClassifiers:
-				prob = atributePct(nmj[nBranch],classifier,classifierValues)
-				if prob <= 0:
-					probLog = 0
-				else:
-					probLog = log(prob,2)
-				splitEntropy += (float(len(nmj[nBranch])) / len(nm)) * prob * probLog
+			if nmj[nBranch] != []:
+				for classifierValues in possibleClassifiers:
+					prob = atributePct(nmj[nBranch],classifier,classifierValues)
+					if prob <= 0:
+						probLog = 0
+					else:
+						probLog = log(prob,2)
+					splitEntropy += (float(len(nmj[nBranch])) / len(nm)) * prob * probLog
+			else:
+				entropy = 400 #if nmj[0] or nmj[1] becomes empty, then splitting has no information gain! Arbitrarily set large entropy
 
 		return -1 * splitEntropy, nmj
 
@@ -231,15 +238,23 @@ class NodePack():
 			for atribute in table[0].headers:
 				if atribute not in splitedDiscrete:
 					#print "atribute = " + str(atribute)
-					for value in distinctAtributes(nm, atribute):
-						if (atribute,value) not in splitedValue:
-							#print "value = " + str(value)
-							entropy, nmj = self.getSplitEntropy(nTag,atribute,value,nm)  
-							#print "entropy = " + str(entropy)
-							if entropy < minEnt:
-								bestTag = nTag
-								bestAtribute = atribute
-								bestValue = value
+					# for value in distinctAtributes(nm, atribute):
+					featureType = nm[0].retrieve(atribute).fType
+
+					if featureType==FeatureType.CONTINUOUS and nm!=None:
+						try:
+							value = np.median(retrieveDataFromColumn(nm,atribute))
+						except: 
+							pass
+
+					if (atribute,value) not in splitedValue:
+						#print "value = " + str(value)
+						entropy, nmj = self.getSplitEntropy(nTag,atribute,value,nm)  
+						#print "entropy = " + str(entropy)
+						if entropy < minEnt:
+							bestTag = nTag
+							bestAtribute = atribute
+							bestValue = value
 		print 'Entropy = ' + str(entropy)
 		print bestTag
 		print bestAtribute
