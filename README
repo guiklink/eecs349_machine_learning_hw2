@@ -2,20 +2,76 @@
 #### READ ME #####
 ##################
 
-Decision Tree: Training, validation, prediction, and pruning. 
+Decision Tree: Training, validation, prediction, and pruning.
 
-Files: 
-data_util.py
-csv_handle.py
-tree_util.py
+###PYTHON FILES:
+data_util.py - A class for handling data structures from the .csv files.
+DNF.py - Verbally outputs the contents of an object tree, in DNF form.
+draw_tree.py - Draws the contents of an object tree, saved as a .png file in root directory.
+make_graph.py - Builds a tree using 10%, 20%... 100% of training data, and compares results when evaluated against validation data.  Outputs a graph.
+mockTree.py - A simple object tree used for testing several other functions.
+model_predict.py - Used for testing unclassified data against a learned tree.  Outputs results in .csv format in root.
+model_prune.py - Performs pruning of the object tree.  Returns the simplified version.
+model_validate.py - Calculates the accuracy of a learned tree given testing or validation data.  Requires a boolean classification column labeled "winner"
+tree_gen.py - Generates a decision tree model
+csv_handler.py - Used for data manipulation of our .csv files
+tree_util.py - A class for handling tree structures.  A tree is described as a list of dictionaries, with each indice representing a node type (ROOT, LEAF, EDGE, UNDEF), its children, its parent, its testing attribute, its testing value, and supporting functions for managing these contents.
 
-model_validate.py
-draw_tree.py
+###DEPENDENCIES
+Python 2.7
+(linux) enum34.  'Sudo pip install enum34'  if not installed
+Python packages csv, matplotlib, numpy, enum, pydot
+
+###DATA FILES TO BE PROVIDED:
+metadata.csv - Defines the labels for the data columns
+btest.csv - Contains data with unknown classification
+bvalidate.csv - Contains data with known classification, but should be used to verify the accuracy of a tree generated from btest.csv
+btest.csv - Contains data with a known classification and should be used to generate the tree
 
 
+###RUNNING OUR CODE
+##IMPORT DATA
+#We store datasets in csv format and use for generating decision trees, verifying accuracies, and making predictions.
+from terminal, 'run csv_handler.py'
+from terminal, "trainData = importDataCSV('metadata.csv','btrain.csv')"
+from terminal, "valData = importDataCSV('metadata.csv','bvalidate.csv')"
+from terminal, "testData = importDataCSV('metadata.csv','btest.csv')"
 
-Files that need to be provided: 
-	*training data set in .csv format
-	*validation data set in .csv format
-	*test data set in .csv format
+
+##GENERATE A TREE
+#Creates a tree object that can be passed into our validation, pruning, predicting, and visualizing files
+from terminal, 'run tree_gen.py'
+from terminal, 'tree = initTree(trainData)'
+
+##VALIDATE THE TREE
+#Checks the accuracy of our generated decision tree using validation data.  Hopefully accuracies aren't too different.
+from terminal, 'run model_validate.py'
+from terminal, 'accuracy = validateTree(tree,valData)'
+
+##PRUNE THE TREE
+#Recursively suppresses individual nodes, tests accuracy, and selects the most informative nodes.
+from terminal, 'run model_prune.py'
+from terminal, 'run pruned= pruneTree(tree,valData)'
+
+##MAKE PREDICTIONS
+#Takes learned tree and unclassified data and predicts outcome.
+From terminal, 'run model_predict.py'
+From terminal, 'predict(tree,testData)'
+
+##PRINT TREE IN DISJUNCTIVE NORMAL FORM
+#Prints the decision tree in DNF form through the terminal.
+from terminal, 'run DNF.py'
+from terminal, 'getRules(tree)'
+
+##VISUALIZE THE TREE
+#Produces a graphical representation of the decision tree and saves a .png file in root.
+from terminal, 'run draw_tree.py'
+from terminal, "makeTree(tree,'filename.png')"
+
+##MAKE A LEARNING GRAPH
+#Plots a graph of validation accuracies given varying amounts of training data used for generate a learned tree.
+from terminal, 'run make_graph.py'
+from terminal, 'genCurve(trainData,valData)'
+
+
 
