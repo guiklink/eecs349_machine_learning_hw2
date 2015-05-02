@@ -84,6 +84,9 @@ class DataRow():											# Data structure for a row of data
 	def retrieveClassifierTag(self):
 		return self.features[self.nFeatures - 1].tag
 
+	def retrieveClassifierValue(self):
+		return self.features[self.nFeatures - 1].getValue()
+
 		
 ###############################################################################################
 

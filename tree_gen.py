@@ -18,9 +18,8 @@ nodeCount = rootNode
 # Entry ->
 # Returns ->
 
-def InitTree(metaData, rawData):
+def InitTree(rawTable):
 	global rootNode
-	rawTable = importDataCSV(metaData,rawData)
 
 	nodePack = NodePack()
 
@@ -137,14 +136,13 @@ def BuildTree(nodePack, rawTable):
 
 	nodePack.switchNodeTypes(NodeType.EDGE,NodeType.LEAF)
 
+	nodePack.updateMajority(rawTable)
 	return nodePack
 
 
 
 ###############################################################################################
 
-
 # if __name__ == '__main__':
-# 	leafEntropy = 0.1
-
-# 	a=InitTree()
+# 	l = importDataCSV('metadata.csv','dummy.csv')
+# 	a = InitTree(l)
