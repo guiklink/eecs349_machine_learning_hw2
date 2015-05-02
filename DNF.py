@@ -20,14 +20,14 @@ def getRules(tree):
 					splitAttribute = tree.getSplitAtribute(tree.getParent(node))
 					if FeatureType.CONTINUOUS == tree.getSplitType(tree.getParent(node)):
 						if node == tree.getChild0(tree.getParent(node)): 
-							Rule = Rule + splitAttribute + " >= " + str(splitVal)
+							Rule = Rule + splitAttribute + " < " + str(splitVal)
 							node = tree.getParent(node)
 							if tree.getParent(node):
 								Rule = Rule + " AND "
 									
 														
 						else:
-							Rule = Rule +splitAttribute + " < " + str(splitVal)
+							Rule = Rule +splitAttribute + " >= " + str(splitVal)
 							node = tree.getParent(node)
 							if tree.getParent(node):
 								Rule = Rule + " AND "

@@ -6,7 +6,6 @@
 from tree_util import *
 from data_util import *
 import draw_tree
-# from model_validate import *
 import model_validate
 import mockTree
 from copy import *
@@ -16,28 +15,13 @@ data = importDataCSV("metadata.csv","minidata.csv")
 
 accuracy = model_validate.validateTree(tree, data)
 
-# def pruneTree(tree, dataSet, accuracy):
-# 	prunedTree = deepcopy(tree)
-
-# 	for i in prunedTree.fields[prunedTree.nType].keys():
-# 			# find a leaf
-# 			if NodeType.LEAF == prunedTree.getNodeType(i):
-# 				leaf = i
-# 				prunedTree.addNodeType(leaf, NodeType.UNDEF) # Ignore current leaf
-# 				newAccuracy = model_validate.validateTree(prunedTree, dataSet)
-
-# 				if newAccuracy < accuracy:
-# 					prunedTree.addNodeType(leaf, NodeType.LEAF) # add current leaf
-# 	return prunedTree
-
-
 def pruneTree(tree, valData):
-	print "number of edges in unpruned tree: ", countEdges(tree)
+	print "number of edges in unpruned tree: ", countSplits(tree)
 	oldAccuracy = 0
 	# treeBest = deepcopy(tree)
 	treeBest = tree
 	for node in tree.fields[tree.nType].keys():
-		if NodeType.EDGE == tree.getNodeType(node):
+		if NodeType.UNDEF == tree.getNodeType(node):
 			newTree = deepcopy(tree)
 			newTree.addNodeType(node, NodeType.LEAF) # convert to leaf
 			newAccuracy = model_validate.validateTree(newTree, valData)
@@ -46,7 +30,7 @@ def pruneTree(tree, valData):
 				treeBest = deepcopy(newTree)
 				newTree = removeChild(treeBest, node)
 				oldAccuracy = newAccuracy
-	print "number of edges in pruned tree: ", countEdges(newTree)
+	print "number of edges in pruned tree: ", countSplits(newTree)
 	return newTree
 					# print "root node: ", node
 
@@ -58,10 +42,10 @@ def removeChild(tree, node):
 	nodeList = [node]
 	currentNode = node
 
-	newTree.addNodeType(node, NodeType.EDGE)
+	newTree.addNodeType(node, NodeType.UNDEF)
 
 	while len(nodeList) > 0 : 
-		if newTree.getNodeType(currentNode) == NodeType.EDGE:
+		if newTree.getNodeType(currentNode) == NodeType.UNDEF: #previous to split EDGE
 			child0 = newTree.getChild0(currentNode)
 			child1 = newTree.getChild1(currentNode)
 			nodeList.append(child0)
@@ -79,14 +63,10 @@ def removeChild(tree, node):
 
 	return newTree
 
-def countEdges(tree):
+def countSplits(tree):
 	count = 1
 	for node in tree.fields[tree.nType].keys():
-		if tree.getNodeType(node) == NodeType.EDGE:
+		if tree.getNodeType(node) == NodeType.UNDEF: #previously EDGE
 		# if NodeType.EDGE == tree.getNodeType(node):
 			count += 1
 	return count
-
-
-
-	

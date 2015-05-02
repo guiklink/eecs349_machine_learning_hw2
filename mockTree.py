@@ -51,8 +51,8 @@ def makeTree():
 	dtree.addNodeType(5,NodeType.LEAF)
 	dtree.addNodeType(6,NodeType.LEAF)
 	dtree.addNodeType(7,NodeType.LEAF)
-	dtree.addNodeType(3,NodeType.EDGE)
-	dtree.addNodeType(4,NodeType.EDGE)
+	dtree.addNodeType(3,NodeType.UNDEF)
+	dtree.addNodeType(4,NodeType.UNDEF)
 
 	dtree.addSplitType(1, FeatureType.CONTINUOUS)
 	dtree.addSplitType(3, FeatureType.CONTINUOUS)

@@ -4,8 +4,13 @@
 
 from tree_util import *
 from data_util import *
-
+import model_validate
+import mockTree
 import csv
+
+tree = mockTree.makeTree()
+data = importDataCSV("metadata.csv","minipredict.csv")
+
 
 def predict(tree, dataSet):
 	"""Used for predicting the outcome of a prediction set using a tree model, returns predicted outcome"""
@@ -30,6 +35,9 @@ def predict(tree, dataSet):
 			splitAttribute = tree.getSplitAtribute(node)
 			print "tree split attribute: ", splitAttribute
 			val = dataPoint.retrieve(splitAttribute).getValue()
+			if val == None:		
+				val = np.median(retrieveDataFromColumn(dataSet, splitAttribute))
+
 			print "data point value for split attribute: ", val
 			if FeatureType.CONTINUOUS == tree.getSplitType(node): 
 				if val >= splitVal:
@@ -49,7 +57,7 @@ def predict(tree, dataSet):
 					node = tree.getChild1(node)
 					print "equal", "goint to next node", node
 					print "node type", tree.getNodeType(node)
-		leafClass = tree.getLeafClassification(node)
+		leafClass = tree.getMajorityClassification(node)
 		print "leaf classification: ", leafClass
 		leafAttribute = tree.getSplitAtribute(node)
 		print "leaf attribute: ", leafAttribute
@@ -59,11 +67,11 @@ def predict(tree, dataSet):
 		dataPoint.retrieve(leafAttribute).addValue(leafClass)
 		print "prediction is: ", dataPoint.retrieve(leafAttribute).getValue()
 
-
+	createFileCSV(dataSet)
+	return dataSet
 
 def createFileCSV(table, path="./prediction"):	
-""" Used to generate a .csv file with predicted labels in the last column (replacing 
-	question marks inside the test set."""	
+	""" Used to generate a .csv file with predicted labels in the last column (replacing question marks inside the test set."""	
 	if len(table) < 1:
 		raise NameError('Empty Table!')
 	else:
@@ -74,4 +82,3 @@ def createFileCSV(table, path="./prediction"):
 		for row in table:
 			file.write(row.toStringCSV() + '\n')
 		file.close() 
-
