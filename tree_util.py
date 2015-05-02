@@ -112,9 +112,10 @@ class NodePack():
 	def getSplitValue(self, tag):
 		return self.fields[self.splitValue][tag]
 
-	def addMajorityClassification(self, tag, classification):		
-		self.fields[self.majorityClassification].update({tag:classification})		
-	def getMajorityClassification(self, tag):		
+	def addMajorityClassification(self, tag, classification):
+		self.fields[self.majorityClassification].update({tag:classification})
+
+	def getMajorityClassification(self, tag):
 		return self.fields[self.majorityClassification][tag]
 
 	def retrieveListOfNodesByType(self, nType):

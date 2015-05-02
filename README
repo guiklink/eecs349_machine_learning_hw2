@@ -1,0 +1,21 @@
+##################
+#### READ ME #####
+##################
+
+Decision Tree: Training, validation, prediction, and pruning. 
+
+Files: 
+data_util.py
+csv_handle.py
+tree_util.py
+
+model_validate.py
+draw_tree.py
+
+
+
+Files that need to be provided: 
+	*training data set in .csv format
+	*validation data set in .csv format
+	*test data set in .csv format
+
