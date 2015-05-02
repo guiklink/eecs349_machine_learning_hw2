@@ -18,9 +18,9 @@ nodeCount = rootNode
 # Entry ->
 # Returns ->
 
-def InitTree():
+def InitTree(metaData, rawData):
 	global rootNode
-	rawTable = importDataCSV("metadata.csv","dummy.csv")
+	rawTable = importDataCSV(metaData,rawData)
 
 	nodePack = NodePack()
 
@@ -70,9 +70,9 @@ def BuildTree(nodePack, rawTable):
 
 	terminationCounter=0
 	prevNodePackSize= len(nodePack.fields[0].keys())
-	while len(nodePack.retrieveListOfNodesByType(NodeType.EDGE)) != 0 and terminationCounter < 3:
+	while len(nodePack.retrieveListOfNodesByType(NodeType.EDGE)) != 0 and terminationCounter < 2:
 		
-		print '>NODE ' + str(nodeCount)
+		print '>> Generating ...'
 
 		edgeNodes = nodePack.retrieveListOfNodesByType(NodeType.EDGE)
 
@@ -99,7 +99,7 @@ def BuildTree(nodePack, rawTable):
 				#print '******** CREATING LEAF*****************'
 				#print nodeTag
 				nodePack.addNodeType(nodeTag,NodeType.LEAF)
-		print 'Node:' + str(nodeCount) + ' | Entropy = ' + str(nodePack.getNodeEntropy(nodeCount, rawTable)) 
+		#print 'Node:' + str(nodeCount) + ' | Entropy = ' + str(nodePack.getNodeEntropy(nodeCount, rawTable)) 
 
 		if len(nodePack.fields[0].keys()) == prevNodePackSize:
 			terminationCounter+=1
@@ -135,7 +135,8 @@ def BuildTree(nodePack, rawTable):
 			nodePack.addSplitAtribute(nodeTag,splitFeature)
 			nodePack.addSplitValue(nodeTag, splitValue)
 
-			
+	nodePack.switchNodeTypes(NodeType.EDGE,NodeType.LEAF)
+
 	return nodePack
 
 
@@ -143,7 +144,7 @@ def BuildTree(nodePack, rawTable):
 ###############################################################################################
 
 
-if __name__ == '__main__':
-	leafEntropy = 0.1
+# if __name__ == '__main__':
+# 	leafEntropy = 0.1
 
-	a=InitTree()
+# 	a=InitTree()

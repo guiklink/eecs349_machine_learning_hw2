@@ -144,6 +144,11 @@ class NodePack():
 			print '=====> Split Atribute: ' + str(self.getSplitAtribute(n))
 			print '=====> Split Value: ' + str(self.getSplitValue(n))
 
+	def switchNodeTypes(self, nTypeOld, nTypeNew):
+		for tag in self.fields[0].keys():
+			if self.getNodeType(tag) == nTypeOld:
+				self.addNodeType(tag,nTypeNew)
+
 ###############################################################################################
 
 # ENTROPHY ####################################################################################
@@ -164,11 +169,11 @@ class NodePack():
 		classifierTag = nm[0].retrieveClassifierTag()				# takes the classifier from the 1th data row
 		entropy = 0													# init a variable to store entrophy
 		classValues = distinctAtributes(nm,classifierTag)			# retrieve all possible classifier values
-		print '\n\n##############about to enter for loop entropy'
-		print classValues
+		#print '\n\n##############about to enter for loop entropy'
+		#print classValues
 		for val in classValues:
 			if val != '?':
-				print '#############for loop entered'
+				#print '#############for loop entered'
 				pct = atributePct(nm,classifierTag,val)					# gets the % of that value in the whole data
 				entropy += pct * log(pct,2)								# calculates and store entropy for the value
 		return (-1 * entropy)										# return entrophy
@@ -274,9 +279,9 @@ class NodePack():
 							bestAtribute = atribute
 							bestValue = value
 		# print 'Entropy = ' + str(entropy)
-		print bestTag
-		print bestAtribute
-		print bestValue
+		#print bestTag
+		#print bestAtribute
+		#print bestValue
 		return bestTag, bestAtribute, bestValue, nmj
 
 ###############################################################################################
