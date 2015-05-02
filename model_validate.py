@@ -4,10 +4,32 @@
 from tree_util import *
 from data_util import *
 import mockTree
+import numpy as np
+
+# 0.6458767915
+# 0.4152051353
+# 0.5437003729
+# 0.7401316767
+# 0.7028994802
+# 0.7129567872
+# ?
+# 0.8103100412
+# 0.3269774799
+# 0.7337943657
+# 0.5631648111
+# 0.6173030736
+# 0.3801946413
+# 0.4905306461
+# 0.6776226923
+# 0.2904823661
+# 0.178755435
+# 0.5654748159
+# 0.2968391471
+# 0.5323625428
 
 
 tree = mockTree.makeTree()
-data = mockTree.makeDummyData()
+valdata = importDataCSV("metadata.csv","minidata.csv")
 
 def validateTree(tree, dataSet):
 	"""Used for validating a learned tree against a validation set, returns percentage accuracy"""
@@ -33,6 +55,10 @@ def validateTree(tree, dataSet):
 			splitAttribute = tree.getSplitAtribute(node)
 			# print "tree split attribute: ", splitAttribute
 			val = dataPoint.retrieve(splitAttribute).getValue()
+			if val = None:
+				nm = filterTableByID(dataSet, tree.getDataRowsIDs(node))
+				val = np.median(retrieveDataFromColumn(nm, splitAttribute))
+			print "val is",val
 			# print "data point value for split attribute: ", val
 			if FeatureType.CONTINUOUS == tree.getSplitType(node): 
 				if val >= splitVal:
@@ -54,12 +80,8 @@ def validateTree(tree, dataSet):
 					# print "node type", tree.getNodeType(node)
 
 		if tree.getNodeType(node)== NodeType.LEAF:
-			leafClass = tree.getLeafClassification(node)
-			# print "leaf classification: ", leafClass
-			leafAttribute = tree.getSplitAtribute(node)
-			# print "leaf attribute: ", leafAttribute
-			# print "datapoint classification: ",dataPoint.retrieve(leafAttribute).getValue()
-			if dataPoint.retrieve(leafAttribute).getValue() == leafClass:
+			leafClass = tree.getMajorityClassification(node)
+			if dataPoint.retrieve('winner').getValue() == leafClass:
 				count = count + 1
 			
 				

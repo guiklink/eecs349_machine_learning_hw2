@@ -67,8 +67,8 @@ def makeTree():
 	dtree.addSplitAtribute(7, "winner")
 
 	dtree.addSplitValue(1,0.5)
-	dtree.addSplitValue(3,1)
-	dtree.addSplitValue(4,10)
+	dtree.addSplitValue(3,0.5)
+	dtree.addSplitValue(4,1)
 
 	dtree.addDataRowIDs(1, 1)
 	dtree.addDataRowIDs(1, 2)
@@ -78,10 +78,13 @@ def makeTree():
 	dtree.addDataRowIDs(1, 6)
 	dtree.addDataRowIDs(1, 7)
 
-	dtree.addLeafClassification(2,1)
-	dtree.addLeafClassification(5,0)
-	dtree.addLeafClassification(6,1)
-	dtree.addLeafClassification(7,0)
+	dtree.addMajorityClassification(1,1)
+	dtree.addMajorityClassification(2,1)
+	dtree.addMajorityClassification(3,0)
+	dtree.addMajorityClassification(4,0)
+	dtree.addMajorityClassification(5,0)
+	dtree.addMajorityClassification(6,1)
+	dtree.addMajorityClassification(7,0)
 
 	return dtree
 

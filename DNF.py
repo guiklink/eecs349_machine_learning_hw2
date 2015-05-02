@@ -13,7 +13,7 @@ def getRules(tree):
 			if NodeType.LEAF == tree.getNodeType(i):
 				node = i #node=leaf.node
 				Rule= "IF " 
-				leafClass = tree.getLeafClassification(node)
+				leafClass = tree.getMajorityClassification(node)
 				
 				while tree.getParent(node):
 					splitVal = tree.getSplitValue(tree.getParent(node))
@@ -57,6 +57,3 @@ def getRules(tree):
 						print " THEN FALSE."
 					if count != stop:
 						print "OR"
-								
-	
-	# print "THEN", output

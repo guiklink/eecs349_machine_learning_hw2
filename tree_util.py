@@ -29,7 +29,7 @@ class NodePack():
 		self.dataRowIDs = 5
 		self.splitAtribute = 6
 		self.splitValue = 7
-		self.leafClassification = 8
+		self.majorityClassification = 8 # the majority class at that node
 	
 	def addNode(self, tag):
 		for i in range(len(self.fields)):
@@ -111,11 +111,11 @@ class NodePack():
 	def getSplitValue(self, tag):
 		return self.fields[self.splitValue][tag]
 
-	def addLeafClassification(self, tag, classification):
-		self.fields[self.leafClassification].update({tag:classification})
+	def addMajorityClassification(self, tag, classification):
+		self.fields[self.majorityClassification].update({tag:classification})
 
-	def getLeafClassification(self, tag):
-		return self.fields[self.leafClassification][tag]
+	def getMajorityClassification(self, tag):
+		return self.fields[self.majorityClassification][tag]
 
 	def retrieveListOfNodesByType(self, nType):
 		result = []
