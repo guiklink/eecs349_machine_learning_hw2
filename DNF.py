@@ -8,14 +8,15 @@ def getRules(tree):
 	count = 0
 	#for all of the nodes in tree model
 	for i in tree.fields[tree.nType].keys():
-		count+=1
+		print "i is ", i
+		count+= 1
 		# find a leaf
 		if NodeType.LEAF == tree.getNodeType(i):
 			node = i #node=leaf.node
 			Rule= "IF " 
 			leafClass = tree.getMajorityClassification(node)
 			
-			while tree.getParent(node):
+			while tree.getParent(node) != None:
 
 				splitVal = tree.getSplitValue(tree.getParent(node))
 				splitAttribute = tree.getSplitAtribute(tree.getParent(node))
