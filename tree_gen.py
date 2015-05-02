@@ -136,13 +136,13 @@ def BuildTree(nodePack, rawTable):
 
 	nodePack.switchNodeTypes(NodeType.EDGE,NodeType.LEAF)
 
-
+	nodePack.updateMajority(rawTable)
 	return nodePack
 
 
 
 ###############################################################################################
 
-if __name__ == '__main__':
-	l = importDataCSV('metadata.csv','dummy.csv')
-	a = InitTree(l)
+# if __name__ == '__main__':
+# 	l = importDataCSV('metadata.csv','dummy.csv')
+# 	a = InitTree(l)

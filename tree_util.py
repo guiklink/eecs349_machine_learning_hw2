@@ -271,6 +271,7 @@ class NodePack():
 						value = np.median(retrieveDataFromColumn(nm,atribute))
 						entropy, nmj = self.getSplitEntropy(nTag,atribute,value,nm) 
 						if entropy < minEnt:
+							minEnt = entropy
 							bestTag = nTag
 							bestAtribute = atribute
 							bestValue = value							
@@ -287,6 +288,7 @@ class NodePack():
 						entropy, nmj = self.getSplitEntropy(nTag,atribute,value,nm)  
 						#print "entropy = " + str(entropy)
 						if entropy < minEnt:
+							minEnt = entropy
 							bestTag = nTag
 							bestAtribute = atribute
 							bestValue = value
