@@ -5,6 +5,7 @@
 from csv_handler import *
 from math import log
 import numpy as np
+import operator
 
 # NODE TYPE #################################################################################
 
@@ -143,11 +144,22 @@ class NodePack():
 			print '=====> Data Instances: ' + str(self.getDataRowIDs(n))
 			print '=====> Split Atribute: ' + str(self.getSplitAtribute(n))
 			print '=====> Split Value: ' + str(self.getSplitValue(n))
+			print '=====> Majority Classifiers: ' + str(self.getMajorityClassification(n))
 
 	def switchNodeTypes(self, nTypeOld, nTypeNew):
 		for tag in self.fields[0].keys():
 			if self.getNodeType(tag) == nTypeOld:
 				self.addNodeType(tag,nTypeNew)
+
+	def updateMajority(self, table):
+		for tag in self.fields[0].keys():
+			idsList = self.getDataRowIDs(tag)
+			data = filterTableByID(table,idsList)
+			distinctClass = getNumberOfOcurrencesByValue(data)
+			sortedDistinctClass = sorted(distinctClass.items(), key=operator.itemgetter(1))
+			mostCommonClass = sortedDistinctClass[-1][0]
+			self.addMajorityClassification(tag,mostCommonClass)
+
 
 ###############################################################################################
 
@@ -259,7 +271,7 @@ class NodePack():
 						value = np.median(retrieveDataFromColumn(nm,atribute))
 						entropy, nmj = self.getSplitEntropy(nTag,atribute,value,nm) 
 						if entropy < minEnt:
-							minEnt=entropy
+							minEnt = entropy
 							bestTag = nTag
 							bestAtribute = atribute
 							bestValue = value							
@@ -276,7 +288,7 @@ class NodePack():
 						entropy, nmj = self.getSplitEntropy(nTag,atribute,value,nm)  
 						#print "entropy = " + str(entropy)
 						if entropy < minEnt:
-							minEnt=entropy
+							minEnt = entropy
 							bestTag = nTag
 							bestAtribute = atribute
 							bestValue = value
@@ -287,5 +299,3 @@ class NodePack():
 		return bestTag, bestAtribute, bestValue, nmj
 
 ###############################################################################################
-
-

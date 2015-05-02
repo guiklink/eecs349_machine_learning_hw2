@@ -135,7 +135,7 @@ def BuildTree(nodePack, rawTable):
 			nodePack.addSplitValue(nodeTag, splitValue)
 
 	nodePack.switchNodeTypes(NodeType.EDGE,NodeType.LEAF)
-
+	print "updating majority classifiers ..."
 	nodePack.updateMajority(rawTable)
 	return nodePack
 

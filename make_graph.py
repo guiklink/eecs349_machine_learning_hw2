@@ -7,12 +7,11 @@ import csv
 from csv_handler import importDataCSV
 import math
 
-<<<<<<< HEAD
-=======
+
 trainData = importDataCSV("metadata.csv","dummy.csv")
 valData = importDataCSV("metadata.csv", "dummy.csv")
 
->>>>>>> full_version
+
 def genCurve(trainData, valData):
 	x = [] # stores the x axis of the graph
 	trainList = [] # the list of accuracies derived from training data
@@ -22,29 +21,16 @@ def genCurve(trainData, valData):
 		i = i+0.5
 		a = 0
 		b = 0
-<<<<<<< HEAD
-		for trial in range(3):
-			newData = sortData(trainData, i) # MAKE THIS
-			tree = getTree(newData) # NEED TO GET THIS FUNCTION WHEN TREEGEN WORKS
-			a = a + model_validation.validateTree(tree, newData)
-			b = b + model_validation.validateTree(tree, valData)
-		a = float(a)/3
-		b = float(b)/3
-=======
 		# for trial in range(3):
 		newData = sortData(trainData, i) #
-		print "newData: ", newData
-		tree = InitTree("metadata.csv", newData) # NEED TO GET THIS FUNCTION WHEN TREEGEN WORKS
+		tree = InitTree(newData) # NEED TO GET THIS FUNCTION WHEN TREEGEN WORKS
 		print "finished a tree"
-		tempData = importDataCSV("metadata.csv", newData)
-		a = a + validateTree(tree, tempData)
+		a = a + validateTree(tree, newData)
 		print ""
 		b = b + validateTree(tree, valData)
 		# a = float(a)/3
 		# b = float(b)/3
 		# print "a: ", a, "b: ", b
->>>>>>> full_version
-
 		trainList.append(a)
 		print "trainList: ", trainList
 		valList.append(b)
@@ -66,19 +52,4 @@ def sortData(dataSet, i):
 	newData = []
 	for i in randomList:
 		newData.append(dataSet[i])
-	createFileCSV(newData, "sortData")
-	return "sortData.csv"
-
-
-def createFileCSV(table, path="./sortData"):	
-	""" Used to generate a .csv file with predicted labels in the last column (replacing question marks inside the test set."""	
-	if len(table) < 1:
-		raise NameError('Empty Table!')
-	else:
-		file = open(path + '.csv', 'w+')
-
-		file.write(table[0].toStringHeaders() + "\n")
-
-		for row in table:
-			file.write(row.toStringCSV() + '\n')
-		file.close() 
+	return newData
