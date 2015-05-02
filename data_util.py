@@ -37,6 +37,9 @@ class Feature():
 	def toString(self):								# returns the Feature in a string format proper for printing
 		return str(self.tag) + " | " + str(self.value) + " | " + str(self.fType)
 
+	def addValue(self, newValue):		
+		self.value = newValue
+
 
 ###############################################################################################
 

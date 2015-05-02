@@ -21,7 +21,7 @@ class NodeType(Enum):				# Enumerator for types of data
 
 class NodePack():
 	def __init__(self):
-		self.fields = [{},{},{},{},{},{},{},{}]
+		self.fields = [{},{},{},{},{},{},{},{},{}]
 		self.parent = 0
 		self.child0 = 1
 		self.child1 = 2
@@ -30,6 +30,7 @@ class NodePack():
 		self.dataRowIDs = 5
 		self.splitAtribute = 6
 		self.splitValue = 7
+		self.majorityClassification = 8 # the majority class at that node
 	
 	def addNode(self, tag):
 		for i in range(len(self.fields)):
@@ -111,6 +112,11 @@ class NodePack():
 	def getSplitValue(self, tag):
 		return self.fields[self.splitValue][tag]
 
+	def addMajorityClassification(self, tag, classification):		
+		self.fields[self.majorityClassification].update({tag:classification})		
+	def getMajorityClassification(self, tag):		
+		return self.fields[self.majorityClassification][tag]
+
 	def retrieveListOfNodesByType(self, nType):
 		result = []
 		for n in self.fields[self.nType].keys():
@@ -157,9 +163,13 @@ class NodePack():
 		classifierTag = nm[0].retrieveClassifierTag()				# takes the classifier from the 1th data row
 		entropy = 0													# init a variable to store entrophy
 		classValues = distinctAtributes(nm,classifierTag)			# retrieve all possible classifier values
+		print '\n\n##############about to enter for loop entropy'
+		print classValues
 		for val in classValues:
-			pct = atributePct(nm,classifierTag,val)					# gets the % of that value in the whole data
-			entropy += pct * log(pct,2)								# calculates and store entropy for the value
+			if val != '?':
+				print '#############for loop entered'
+				pct = atributePct(nm,classifierTag,val)					# gets the % of that value in the whole data
+				entropy += pct * log(pct,2)								# calculates and store entropy for the value
 		return (-1 * entropy)										# return entrophy
 ###############################################################################################
 
@@ -202,6 +212,7 @@ class NodePack():
 				if(value == maxValue or value == minValue):
 					return 400, [[],[]] # No information gain if children are empty
 				nmj.append(filterTable(nm, featureTag, value, maxValue, nBranch)) # LAST ARGUMENT must be a boolean
+
 			if nmj[nBranch] != []:
 				for classifierValues in possibleClassifiers:
 					prob = atributePct(nmj[nBranch],classifier,classifierValues)
@@ -236,18 +247,24 @@ class NodePack():
 			#print ">> nTag = " + str(nTag) 
 			nm = filterTableByID(table,self.getDataRowIDs(nTag))
 			for atribute in table[0].headers:
-				if atribute not in splitedDiscrete:
-					#print "atribute = " + str(atribute)
-					# for value in distinctAtributes(nm, atribute):
-					featureType = nm[0].retrieve(atribute).fType
+				featureType = nm[0].retrieve(atribute).fType
+				if featureType==FeatureType.CONTINUOUS and nm!=None:
+					try:
+						value = np.median(retrieveDataFromColumn(nm,atribute))
+						entropy, nmj = self.getSplitEntropy(nTag,atribute,value,nm) 
+						if entropy < minEnt:
+							bestTag = nTag
+							bestAtribute = atribute
+							bestValue = value							
+					except: 
+						print 'tried to split empty node and skipped:' + str(nTag)
+						pass
 
-					if featureType==FeatureType.CONTINUOUS and nm!=None:
-						try:
-							value = np.median(retrieveDataFromColumn(nm,atribute))
-						except: 
-							pass
-
-					if (atribute,value) not in splitedValue:
+				elif featureType==FeatureType.DISCRETE and (atribute,value) not in splitedValue:
+					# if atribute not in splitedDiscrete:
+						#print "atribute = " + str(atribute)
+					for value in distinctAtributes(nm, atribute):
+												
 						#print "value = " + str(value)
 						entropy, nmj = self.getSplitEntropy(nTag,atribute,value,nm)  
 						#print "entropy = " + str(entropy)
@@ -255,14 +272,12 @@ class NodePack():
 							bestTag = nTag
 							bestAtribute = atribute
 							bestValue = value
-		print 'Entropy = ' + str(entropy)
+		# print 'Entropy = ' + str(entropy)
 		print bestTag
 		print bestAtribute
 		print bestValue
 		return bestTag, bestAtribute, bestValue, nmj
 
 ###############################################################################################
-
-
 
 

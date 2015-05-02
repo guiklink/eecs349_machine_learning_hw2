@@ -20,15 +20,16 @@ nodeCount = rootNode
 
 def InitTree():
 	global rootNode
-	rawTable = importDataCSV("metadata.csv","btrain.csv")
+	rawTable = importDataCSV("metadata.csv","dummy.csv")
 
 	nodePack = NodePack()
 
 	nodePack.addNode(rootNode)
 	nodePack.addDataRowIDs(rootNode,distinctAtributes(rawTable,"id"))
 	nodePack.addNodeType(rootNode,NodeType.EDGE)
-
-	BuildTree(nodePack, rawTable)
+	a=BuildTree(nodePack, rawTable)
+	# nodePack.printNodePack()
+	return a
 
 
 ###############################################################################################
@@ -67,42 +68,45 @@ def BuildTree(nodePack, rawTable):
 	splittedDiscrete = []
 	splittedValue = []
 
-	while len(nodePack.retrieveListOfNodesByType(NodeType.EDGE)) != 0:
+	terminationCounter=0
+	prevNodePackSize= len(nodePack.fields[0].keys())
+	while len(nodePack.retrieveListOfNodesByType(NodeType.EDGE)) != 0 and terminationCounter < 3:
 		
 		print '>NODE ' + str(nodeCount)
 
 		edgeNodes = nodePack.retrieveListOfNodesByType(NodeType.EDGE)
 
-		'''print '\n\nAll nodes'
-		print nodePack.fields[0].keys()
-		print '\n\n ****** ROOT'
-		print nodePack.retrieveNodesByType(NodeType.ROOT)
+		# print '\n\nAll nodes'
+		# print nodePack.fields[0].keys()
+		# print '\n\n ****** ROOT'
+		# print nodePack.retrieveNodesByType(NodeType.ROOT)
 
-		print '\n\n ****** ALL LEAF NODES'
-		print nodePack.retrieveNodesByType(NodeType.LEAF)
+		# print '\n\n ****** ALL LEAF NODES'
+		# print nodePack.retrieveNodesByType(NodeType.LEAF)
 
-		print '\n\n ****** ALL EDGE NODES'
-		print nodePack.retrieveNodesByType(NodeType.EDGE)
+		# print '\n\n ****** ALL EDGE NODES'
+		# print nodePack.retrieveNodesByType(NodeType.EDGE)
 
-		print '\n\n ****** ALL UNDEF NODES'
-		print nodePack.retrieveNodesByType(NodeType.UNDEF)'''
+		# print '\n\n ****** ALL UNDEF NODES'
+		# print nodePack.retrieveNodesByType(NodeType.UNDEF)
 		
 		# nodePack.printNodePack()
 
 		# w=input('\n\nWaiting... ')
 
 		for nodeTag in edgeNodes:
-			if nodePack.getNodeEntropy(nodeTag, rawTable) < 0.2:
+			if nodePack.getNodeEntropy(nodeTag, rawTable) < 0.1:
 				#print '******** CREATING LEAF*****************'
 				#print nodeTag
 				nodePack.addNodeType(nodeTag,NodeType.LEAF)
-			#print 'Node:' + str(nodeTag) + ' | Entropy = ' + str(nodePack.getNodeEntropy(nodeTag, rawTable)) 
+		print 'Node:' + str(nodeCount) + ' | Entropy = ' + str(nodePack.getNodeEntropy(nodeCount, rawTable)) 
 
+		if len(nodePack.fields[0].keys()) == prevNodePackSize:
+			terminationCounter+=1
 
 		splitNodeTag,splitFeature,splitValue,nmj = nodePack.bestSplit(1000,rawTable,splittedDiscrete,splittedValue)
 
-
-
+		prevNodePackSize = len(nodePack.fields[0].keys())
 		if nmj[0] != [] and nmj[1] != []:
 			splittedValue.append((splitFeature,splitValue))
 
@@ -130,6 +134,8 @@ def BuildTree(nodePack, rawTable):
 
 			nodePack.addSplitAtribute(nodeTag,splitFeature)
 			nodePack.addSplitValue(nodeTag, splitValue)
+
+			
 	return nodePack
 
 
@@ -140,4 +146,4 @@ def BuildTree(nodePack, rawTable):
 if __name__ == '__main__':
 	leafEntropy = 0.1
 
-	InitTree()
+	a=InitTree()
