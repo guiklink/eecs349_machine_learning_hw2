@@ -18,7 +18,7 @@ def genCurve(trainData, valData):
 	valList = [] # the list of accuracies derived from validation data
 	i = 0
 	while i < 1: 
-		i = i+0.5
+		i = i+0.1
 		a = 0
 		b = 0
 		# for trial in range(3):
