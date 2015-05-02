@@ -228,19 +228,28 @@ def retrieveMinFromColumn(table, column):
 ###############################################################################################
 
 
-# DONT USE IT
-# SORT TABLE BY FEATURE VALUES ################################################################
-'''
-# Takes the name of a column and return all the values of it.
+# GET VALUES AND # OF OCCURRENCE ###################################################################
 
-# Entry -> DataRow[] | String (Name of the column)
-# Returns -> String[]
+# Def
 
-def sortTableByFeatureValue(table, feature):		
+# Entry -> 
+# Returns -> 
+
+def getNumberOfOcurrencesByValue(table):		
 	if len(table) < 1:
 		raise NameError('Empty Table!')
 	else:
-	return result
-'''
+		distinctValues = {}
+		for row in table:
+			val = row.retrieveClassifierValue() 
+			if val not in distinctValues.keys():
+				distinctValues.update({val:1})
+			else:
+				acc = distinctValues[val]
+				distinctValues.update({val:acc+1})
+	return distinctValues
+
 ###############################################################################################
+
+
 

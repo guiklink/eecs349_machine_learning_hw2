@@ -5,6 +5,7 @@
 from csv_handler import *
 from math import log
 import numpy as np
+import operator
 
 # NODE TYPE #################################################################################
 
@@ -112,9 +113,10 @@ class NodePack():
 	def getSplitValue(self, tag):
 		return self.fields[self.splitValue][tag]
 
-	def addMajorityClassification(self, tag, classification):		
-		self.fields[self.majorityClassification].update({tag:classification})		
-	def getMajorityClassification(self, tag):		
+	def addMajorityClassification(self, tag, classification):
+		self.fields[self.majorityClassification].update({tag:classification})
+
+	def getMajorityClassification(self, tag):
 		return self.fields[self.majorityClassification][tag]
 
 	def retrieveListOfNodesByType(self, nType):
@@ -142,6 +144,22 @@ class NodePack():
 			# print '=====> Data Instances: ' + str(self.getDataRowIDs(n))
 			print '=====> Split Atribute: ' + str(self.getSplitAtribute(n))
 			print '=====> Split Value: ' + str(self.getSplitValue(n))
+			print '=====> Majority Classifiers: ' + str(self.getMajorityClassification(n))
+
+	def switchNodeTypes(self, nTypeOld, nTypeNew):
+		for tag in self.fields[0].keys():
+			if self.getNodeType(tag) == nTypeOld:
+				self.addNodeType(tag,nTypeNew)
+
+	def updateMajority(self, table):
+		for tag in self.fields[0].keys():
+			idsList = self.getDataRowIDs(tag)
+			data = filterTableByID(table,idsList)
+			distinctClass = getNumberOfOcurrencesByValue(data)
+			sortedDistinctClass = sorted(distinctClass.items(), key=operator.itemgetter(1))
+			mostCommonClass = sortedDistinctClass[-1][0]
+			self.addMajorityClassification(tag,mostCommonClass)
+
 
 ###############################################################################################
 
@@ -255,7 +273,7 @@ class NodePack():
 						# print "min Entropy" + str(minEnt)
 						# print "split Entropy" + str(entropy)
 						if entropy < minEnt:
-							minEnt=entropy
+							minEnt = entropy
 							bestTag = nTag
 							bestAtribute = atribute
 							bestValue = value							
@@ -273,7 +291,6 @@ class NodePack():
 						entropy, nmj = self.getSplitEntropy(nTag,atribute,value,nm)  
 						# print "entropy = " + str(entropy) 
 						if entropy < minEnt:
-							
 							minEnt=entropy
 							# print "node= " + str(nTag), "minentropy = " + str(minEnt)
 							# raw_input('Enter')
@@ -287,5 +304,3 @@ class NodePack():
 		return bestTag, bestAtribute, bestValue, nmj
 
 ###############################################################################################
-
-

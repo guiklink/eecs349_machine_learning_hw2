@@ -1,0 +1,31 @@
+## Unpruned: 
+
+IF rundifferential < 43.0
+OR
+IF numinjured < 2.0 AND rundifferential >= 43.0
+OR
+IF oppwinpercent < 0.6278062246 AND numinjured >= 2.0 AND rundifferential >= 43.0
+OR
+IF rundifferential < 48.5 AND oppwinpercent >= 0.6278062246 AND numinjured >= 2.0 AND rundifferential >= 43.0
+OR
+IF oppstartingpitcher != 5 AND rundifferential >= 48.5 AND oppwinpercent >= 0.6278062246 AND numinjured >= 2.0 AND rundifferential >= 43.0
+OR
+IF winpercent < 0.6837735365 AND oppstartingpitcher = 5 AND rundifferential >= 48.5 AND oppwinpercent >= 0.6278062246 AND numinjured >= 2.0 AND rundifferential >= 43.0
+OR
+IF winpercent >= 0.6837735365 AND oppstartingpitcher = 5 AND rundifferential >= 48.5 AND oppwinpercent >= 0.6278062246 AND numinjured >= 2.0 AND rundifferential >= 43.0
+
+
+##Pruned: 
+
+IF rundifferential < 43.0
+OR
+IF numinjured < 2.0 AND rundifferential >= 43.0
+OR
+IF oppwinpercent < 0.6278062246 AND numinjured >= 2.0 AND rundifferential >= 43.0
+OR
+IF rundifferential < 48.5 AND oppwinpercent >= 0.6278062246 AND numinjured >= 2.0 AND rundifferential >= 43.0
+OR
+IF oppstartingpitcher != 5 AND rundifferential >= 48.5 AND oppwinpercent >= 0.6278062246 AND numinjured >= 2.0 AND rundifferential >= 43.0
+OR
+IF oppstartingpitcher = 5 AND rundifferential >= 48.5 AND oppwinpercent >= 0.6278062246 AND numinjured >= 2.0 AND rundifferential >= 43.0
+

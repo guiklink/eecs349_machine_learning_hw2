@@ -37,7 +37,8 @@ class Feature():
 	def toString(self):								# returns the Feature in a string format proper for printing
 		return str(self.tag) + " | " + str(self.value) + " | " + str(self.fType)
 
-	def addValue(self, newValue):		
+
+	def addValue(self, newValue):
 		self.value = newValue
 
 
@@ -83,6 +84,10 @@ class DataRow():											# Data structure for a row of data
 	def retrieveClassifierTag(self):
 		return self.features[self.nFeatures - 1].tag
 
+	def retrieveClassifierValue(self):
+		return self.features[self.nFeatures - 1].getValue()
+
+		
 ###############################################################################################
 
 # Table Printer ##############################################################################

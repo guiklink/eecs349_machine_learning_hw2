@@ -1,0 +1,15 @@
+header,type
+winpercent,continuous
+oppwinpercent,continuous
+weather,discrete
+temperature,continuous
+numinjured,continuous
+oppnuminjured,continuous
+startingpitcher,discrete
+oppstartingpitcher,discrete
+dayssincegame,continuous
+oppdayssincegame,continuous
+homeaway,discrete
+rundifferential,continuous
+opprundifferential,continuous
+winner,discrete

@@ -18,9 +18,8 @@ nodeCount = rootNode
 # Entry ->
 # Returns ->
 
-def InitTree():
+def InitTree(rawTable):
 	global rootNode
-	rawTable = importDataCSV("metadata.csv","dummy.csv")
 
 	nodePack = NodePack()
 
@@ -73,6 +72,7 @@ def BuildTree(nodePack, rawTable):
 	edgeNodes = nodePack.retrieveListOfNodesByType(NodeType.EDGE)
 	while len(edgeNodes) != 0 and terminationCounter < 2:
 
+
 		# print '>NODE ' + str(nodeCount)
 
 		# print '\n\nAll nodes'
@@ -98,6 +98,7 @@ def BuildTree(nodePack, rawTable):
 				#print '******** CREATING LEAF*****************'
 				#print nodeTag
 				nodePack.addNodeType(nodeTag,NodeType.LEAF)
+
 		# print 'Node:' + str(nodeCount) + ' | Entropy = ' + str(nodePack.getNodeEntropy(nodeCount, rawTable)) 
 
 		if len(nodePack.fields[0].keys()) == prevNodePackSize:
@@ -156,15 +157,16 @@ def BuildTree(nodePack, rawTable):
 			nodePack.addSplitAtribute(nodeTag,splitFeature)
 			nodePack.addSplitValue(nodeTag, splitValue)
 
-		edgeNodes = nodePack.retrieveListOfNodesByType(NodeType.EDGE)
+
+	nodePack.switchNodeTypes(NodeType.EDGE,NodeType.LEAF)
+	print "updating majority classifiers ..."
+	nodePack.updateMajority(rawTable)
 	return nodePack
 
 
 
 ###############################################################################################
 
-
-if __name__ == '__main__':
-	leafEntropy = 0.1
-
-	a=InitTree()
+# if __name__ == '__main__':
+# 	l = importDataCSV('metadata.csv','dummy.csv')
+# 	a = InitTree(l)
