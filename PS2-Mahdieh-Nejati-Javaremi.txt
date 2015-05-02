@@ -1,0 +1,9 @@
+Questions: 
+
+1. We wrote data_util.py and tree_util.py in order to handle our .csv files and decision tree. The decision tree is represented as a custom class: NodePack, which is a list of dictionaries. Each dict stores an aspect of each node, from it's parent to each children nodes, the attribute that was split on, the value used for splitting, whether the node is a LEAF, ROOT, EDGE or UNDEF, etc. The NodePack represents the entire tree. Each node can be accessed via it's key. 
+
+2. The examples are represented by a custom class DataRow. This class is defined in data_util.py which combined with csv_handler can handle the .csv data with our python code. A metadata.csv file was also written that correlates attributes with columns of data. If the data changes, a new metadata file must accompany it. 
+
+3. The splitting attribute is chosen using entropy and equations 9.3, 9.7, and 9.8 of "Intro to Machine Learning" by Ethem Alpaydin. The entropy for splitting over each feature is tested, and the attribute that results in the lowest entropy is chosen for the split. In the case of numeric attributes: 
+
+4. 
