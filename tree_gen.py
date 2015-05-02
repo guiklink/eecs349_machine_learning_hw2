@@ -7,7 +7,7 @@ from data_util import *
 from csv_handler import *
 
 # GLOBAL NODE TAGGER
-rootNode = 0
+rootNode = 1
 nodeCount = rootNode 
 
 
@@ -27,6 +27,7 @@ def InitTree(rawTable):
 	nodePack.addDataRowIDs(rootNode,distinctAtributes(rawTable,"id"))
 	nodePack.addNodeType(rootNode,NodeType.EDGE)
 	a=BuildTree(nodePack, rawTable)
+	a.writeNodePackToFile()
 	# nodePack.printNodePack()
 	return a
 
@@ -167,6 +168,6 @@ def BuildTree(nodePack, rawTable):
 
 ###############################################################################################
 
-# if __name__ == '__main__':
-# 	l = importDataCSV('metadata.csv','dummy.csv')
+if __name__ == '__main__':
+	l = importDataCSV('metadata.csv','dummy.csv')
 # 	a = InitTree(l)
