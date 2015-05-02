@@ -10,10 +10,10 @@ from tree_gen import InitTree
 from copy import *
 
 trainData = importDataCSV("metadata.csv","dummy.csv")
-tree = InitTree("metadata.csv", trainData)
-valData = importDataCSV("metadata.csv","bvalidate.csv")
+tree = InitTree(trainData)
+valData = importDataCSV("metadata.csv","dummyvalidate.csv")
 
-accuracy = model_validate.validateTree(tree, data)
+accuracy = model_validate.validateTree(tree, valData)
 
 def pruneTree(tree, valData):
 	print "number of edges in unpruned tree: ", countSplits(tree)

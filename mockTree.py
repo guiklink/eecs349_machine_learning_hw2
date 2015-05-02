@@ -88,7 +88,7 @@ def makeTree():
 
 	return dtree
 
-tree = makeTree()
+mocktree = makeTree()
 data = makeDummyData()
 dataPre = makeDummyPredictionData()
 # def validateTree(tree, dataSet):

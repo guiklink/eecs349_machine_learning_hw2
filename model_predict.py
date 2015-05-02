@@ -9,8 +9,8 @@ from tree_gen import InitTree
 import csv
 
 trainData = importDataCSV("metadata.csv","dummy.csv")
-tree = InitTree("metadata.csv", trainData)
-testData = importDataCSV("metadata.csv","btest.csv")
+tree = InitTree(trainData)
+testData = importDataCSV("metadata.csv","dummytest.csv")
 
 
 def predict(tree, dataSet):
@@ -19,7 +19,6 @@ def predict(tree, dataSet):
 	count = 0 #used for tracking how many times we've correctly classified our data
 	for index in range(len(dataSet)):
 		dataPoint = dataSet[index]
-		print "Current dataPoint: ", dataPoint.retrieve('id').getValue()
 		node = 0
 		for i in tree.fields[tree.nType].keys():
 			if NodeType.ROOT == tree.getNodeType(i):
@@ -60,7 +59,7 @@ def predict(tree, dataSet):
 					print "node type", tree.getNodeType(node)
 		leafClass = tree.getMajorityClassification(node)
 		print "leaf classification: ", leafClass
-		leafAttribute = tree.getSplitAtribute(node)
+		leafAttribute = dataSet[0].retrieveClassifierTag()
 		print "leaf attribute: ", leafAttribute
 		
 		# Need to fill the last column (which is the same column as leafAttribute) with the 

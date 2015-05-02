@@ -8,7 +8,7 @@ import numpy as np
 
 trainData = importDataCSV("metadata.csv","dummy.csv")
 # tree = InitTree("metadata.csv", trainData)
-valData = importDataCSV("metadata.csv","bvalidate.csv")
+valData = importDataCSV("metadata.csv","dummyvalidate.csv")
 
 def validateTree(tree, dataSet):
 	"""Used for validating a learned tree against a validation set, returns percentage accuracy"""
