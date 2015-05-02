@@ -4,6 +4,7 @@
 
 from csv_handler import *
 from math import log
+import numpy as np
 
 # NODE TYPE #################################################################################
 
@@ -152,25 +153,44 @@ class NodePack():
 
 # GET SPLIT ENTROPY ##################################################################################
 
-# Calulate the best node where a split can be performed
+# Calulate the entropy of each node possible value for spliting
 
 # Entry -> String (node tag) | String (feature to plit) | String (value to split)
-# Returns -> 
+# Returns -> Float (entropy)
 
 	def getSplitEntropy(self, nodeTag, featureTag, value, table):
+		
+		featureType = table[0].retrieve(featureTag).fType
+
 		nm = table
-		nm0 = filterTable(table, featureTag, value, False)
-		nm1 = filterTable(table, featureTag, value, True)
+		classifier = table[0].retrieveClassifierTag()
 
-		pm00 = atributePct(nm0,table[0].retrieveClassifierTag,0)
-		pm01 = atributePct(nm0,table[0].retrieveClassifierTag,1)
+		nmj = []
 
-		pm10 = atributePct(nm1,table[0].retrieveClassifierTag,0)
-		pm11 = atributePct(nm1,table[0].retrieveClassifierTag,1)
+		possibleClassifiers = distinctAtributes(nm, classifier)
 
-		entropy = -1* (nm0/nm(pm00*log(pm00,2)+pm01*log(pm01,2)) + nm1/nm(pm10*log(pm10,2)+pm11*log(pm11,2)))
-		return entropy
+		splitEntropy = 0
 
+		for nBranch in range(2):							# binary split only
+			if featureType == FeatureType.DISCRETE:
+				nmj.append(filterTable(nm, featureTag, value, None, nBranch)) # LAST ARGUMENT must be a boolean
+			elif featureType == FeatureType.CONTINUOUS:
+				if(value == None):
+					value = np.median(retrieveDataFromColumn(nm,featureTag))
+				maxValue = retrieveMaxFromColumn(nm,featureTag)
+				minValue = retrieveMinFromColumn(nm,featureTag)
+				if(value == maxValue or value == minValue):
+					return 400 # No information gain if children are empty
+				nmj.append(filterTable(nm, featureTag, value, maxValue, nBranch)) # LAST ARGUMENT must be a boolean
+				print len(nmj)
+			for classifierValues in possibleClassifiers:
+				prob = atributePct(nmj[nBranch],classifier,classifierValues)
+				if prob <= 0:
+					probLog = 0
+				else:
+					probLog = log(prob,2)
+				splitEntropy += (float(len(nmj[nBranch])) / len(nm)) * prob * probLog  
+		return -1 * splitEntropy
 
 ###############################################################################################
 
@@ -193,16 +213,20 @@ class NodePack():
 			bestValue = None
 
 			for nTag in self.retrieveListOfNodesByType(NodeType.EDGE):
+				print "nTag = " + str(nTag) 
 				for atribute in table[0].headers:
+					print "atribute = " + str(atribute)
 					for value in distinctAtributes(table, atribute):
+						print "value = " + str(value)
 						entropy = self.getSplitEntropy(nTag,atribute,value,table)
+						print "entropy = " + str(entropy)
 						if entropy < minEnt:
 							bestTag = nTag
 							bestAtribute = atribute
 							bestValue = value
 			return bestTag, bestAtribute, bestValue
 
-
+###############################################################################################
 
 if __name__ == '__main__':
 	global dtree

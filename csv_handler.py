@@ -166,3 +166,75 @@ def createFileCSV(table, path="./sample"):
 
 ###############################################################################################
 
+
+# RETRIEVE DATA FROM A COLUMN #################################################################
+
+# Takes the name of a column and return all the values of it.
+
+# Entry -> DataRow[] | String (Name of the column)
+# Returns -> String[]
+
+def retrieveDataFromColumn(table, column):		
+	if len(table) < 1:
+		raise NameError('Empty Table!')
+	else:
+		result = []
+
+		for i in range(len(table)):
+			result.append(table[i].retrieve(column).getValue())
+
+	return result
+
+###############################################################################################
+
+# RETRIEVE MAX VALUE FROM A COLUMN ############################################################
+
+# Def
+
+# Entry -> 
+# Returns -> 
+
+def retrieveMaxFromColumn(table, column):		
+	if len(table) < 1:
+		raise NameError('Empty Table!')
+	else:
+		l = retrieveDataFromColumn(table,column)
+		l = filter(lambda a: a != None, l)
+		return max(l)
+
+###############################################################################################
+
+# RETRIEVE MIN VALUE FROM A COLUMN ############################################################
+
+# Def
+
+# Entry -> 
+# Returns -> 
+
+def retrieveMinFromColumn(table, column):		
+	if len(table) < 1:
+		raise NameError('Empty Table!')
+	else:
+		l = retrieveDataFromColumn(table,column)
+		l = filter(lambda a: a != None, l)
+		return min(l)
+
+###############################################################################################
+
+
+# DONT USE IT
+# SORT TABLE BY FEATURE VALUES ################################################################
+'''
+# Takes the name of a column and return all the values of it.
+
+# Entry -> DataRow[] | String (Name of the column)
+# Returns -> String[]
+
+def sortTableByFeatureValue(table, feature):		
+	if len(table) < 1:
+		raise NameError('Empty Table!')
+	else:
+	return result
+'''
+###############################################################################################
+
