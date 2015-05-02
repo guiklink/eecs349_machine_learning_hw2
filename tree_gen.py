@@ -8,7 +8,7 @@ from csv_handler import *
 
 # GLOBAL NODE TAGGER
 rootNode = 0
-nodeCount = rootNode + 1
+nodeCount = rootNode 
 
 
 # INIT TREE ###################################################################################
@@ -68,8 +68,11 @@ def BuildTree(nodePack, rawTable):
 	splittedValue = []
 
 	while len(nodePack.retrieveListOfNodesByType(NodeType.EDGE)) != 0:
-		edgeNodes = nodePack.retrieveListOfNodesByType(NodeType.EDGE)
 		
+		print '>NODE ' + str(nodeCount)
+
+		edgeNodes = nodePack.retrieveListOfNodesByType(NodeType.EDGE)
+		'''
 		print '\n\nAll nodes'
 		print nodePack.fields[0].keys()
 		print '\n\n ****** ROOT'
@@ -86,16 +89,19 @@ def BuildTree(nodePack, rawTable):
 		
 		nodePack.printNodePack()
 
-		w=input('\n\nWaiting... ')
+		w=input('\n\nWaiting... ')'''
 
 		for nodeTag in edgeNodes:
-			if nodePack.getNodeEntropy(nodeTag, rawTable) < 0.3:
-				print '******** CREATING LEAF*****************'
-				print nodeTag
+			if nodePack.getNodeEntropy(nodeTag, rawTable) < 0.5:
+				#print '******** CREATING LEAF*****************'
+				#print nodeTag
 				nodePack.addNodeType(nodeTag,NodeType.LEAF)
+			#print 'Node:' + str(nodeTag) + ' | Entropy = ' + str(nodePack.getNodeEntropy(nodeTag, rawTable)) 
 
 
 		splitNodeTag,splitFeature,splitValue,nmj = nodePack.bestSplit(1000,rawTable,splittedDiscrete,splittedValue)
+
+
 
 		if nmj[0] != [] and nmj[1] != []:
 			splittedValue.append((splitFeature,splitValue))

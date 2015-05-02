@@ -226,15 +226,15 @@ class NodePack():
 		#entropy = 5000
 
 		for nTag in self.retrieveListOfNodesByType(NodeType.EDGE):
-			print ">> nTag = " + str(nTag) 
+			#print ">> nTag = " + str(nTag) 
 			nm = filterTableByID(table,self.getDataRowIDs(nTag))
 			for atribute in table[0].headers:
 				if atribute not in splitedDiscrete:
 					#print "atribute = " + str(atribute)
-					for value in distinctAtributes(table, atribute):
+					for value in distinctAtributes(nm, atribute):
 						if (atribute,value) not in splitedValue:
 							#print "value = " + str(value)
-							entropy, nmj = self.getSplitEntropy(nTag,atribute,value,table)  
+							entropy, nmj = self.getSplitEntropy(nTag,atribute,value,nm)  
 							#print "entropy = " + str(entropy)
 							if entropy < minEnt:
 								bestTag = nTag
