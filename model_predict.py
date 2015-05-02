@@ -5,11 +5,12 @@
 from tree_util import *
 from data_util import *
 import model_validate
-import mockTree
+from tree_gen import InitTree
 import csv
 
-tree = mockTree.makeTree()
-data = importDataCSV("metadata.csv","minipredict.csv")
+trainData = importDataCSV("metadata.csv","dummy.csv")
+tree = InitTree("metadata.csv", trainData)
+testData = importDataCSV("metadata.csv","btest.csv")
 
 
 def predict(tree, dataSet):

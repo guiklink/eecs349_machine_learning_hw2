@@ -124,7 +124,30 @@ class NodePack():
 			if self.fields[self.nType][n] == nType:
 				result.append(n)
 
+		return result 								# return a list of node tags
+
+	def retrieveNodesByType(self, nType):
+		result = []
+		for nTag in self.fields[0].keys():
+			if self.getNodeType(nTag) == nType:
+				result.append(nTag)
 		return result
+
+	def printNodePack(self):
+		for n in self.fields[0].keys():
+			print '\n==> NODE: ' + str(n)
+			print '=====> Type: ' + str(self.getNodeType(n))
+			print '=====> Parent: ' + str(self.getParent(n))
+			print '=====> Child0: ' + str(self.getChild0(n))
+			print '=====> Child1: ' + str(self.getChild1(n))
+			print '=====> Data Instances: ' + str(self.getDataRowIDs(n))
+			print '=====> Split Atribute: ' + str(self.getSplitAtribute(n))
+			print '=====> Split Value: ' + str(self.getSplitValue(n))
+
+	def switchNodeTypes(self, nTypeOld, nTypeNew):
+		for tag in self.fields[0].keys():
+			if self.getNodeType(tag) == nTypeOld:
+				self.addNodeType(tag,nTypeNew)
 
 ###############################################################################################
 
@@ -140,14 +163,19 @@ class NodePack():
 			raise NameError('This node links to no instance!')
 		nm = filterTableByID(csvData, self.getDataRowIDs(tag))
 		if len(nm) == 0:											# checks if the instances for the node were found
+			print self.getDataRowIDs(tag)
 			raise NameError('The IDs in your node dont match any node in the raw data!')
 
 		classifierTag = nm[0].retrieveClassifierTag()				# takes the classifier from the 1th data row
 		entropy = 0													# init a variable to store entrophy
 		classValues = distinctAtributes(nm,classifierTag)			# retrieve all possible classifier values
+		#print '\n\n##############about to enter for loop entropy'
+		#print classValues
 		for val in classValues:
-			pct = atributePct(nm,classifierTag,val)					# gets the % of that value in the whole data
-			entropy += pct * log(pct,2)								# calculates and store entropy for the value
+			if val != '?':
+				#print '#############for loop entered'
+				pct = atributePct(nm,classifierTag,val)					# gets the % of that value in the whole data
+				entropy += pct * log(pct,2)								# calculates and store entropy for the value
 		return (-1 * entropy)										# return entrophy
 ###############################################################################################
 
@@ -163,6 +191,7 @@ class NodePack():
 		featureType = table[0].retrieve(featureTag).fType
 
 		nm = table
+
 		classifier = table[0].retrieveClassifierTag()
 
 		nmj = []
@@ -172,25 +201,36 @@ class NodePack():
 		splitEntropy = 0
 
 		for nBranch in range(2):							# binary split only
+
 			if featureType == FeatureType.DISCRETE:
 				nmj.append(filterTable(nm, featureTag, value, None, nBranch)) # LAST ARGUMENT must be a boolean
 			elif featureType == FeatureType.CONTINUOUS:
 				if(value == None):
-					value = np.median(retrieveDataFromColumn(nm,featureTag))
-				maxValue = retrieveMaxFromColumn(nm,featureTag)
-				minValue = retrieveMinFromColumn(nm,featureTag)
-				if(value == maxValue or value == minValue):
-					return 400 # No information gain if children are empty
-				nmj.append(filterTable(nm, featureTag, value, maxValue, nBranch)) # LAST ARGUMENT must be a boolean
-				print len(nmj)
-			for classifierValues in possibleClassifiers:
-				prob = atributePct(nmj[nBranch],classifier,classifierValues)
-				if prob <= 0:
-					probLog = 0
+					return 400, [[],[]]
+					# value = np.median(retrieveDataFromColumn(nm,featureTag))
+				if nm==[]:
+					maxValue=0
+					minValue=0
 				else:
-					probLog = log(prob,2)
-				splitEntropy += (float(len(nmj[nBranch])) / len(nm)) * prob * probLog  
-		return -1 * splitEntropy
+					maxValue = retrieveMaxFromColumn(nm,featureTag)
+					minValue = retrieveMinFromColumn(nm,featureTag)
+
+				if(value == maxValue or value == minValue):
+					return 400, [[],[]] # No information gain if children are empty
+				nmj.append(filterTable(nm, featureTag, value, maxValue, nBranch)) # LAST ARGUMENT must be a boolean
+
+			if nmj[nBranch] != []:
+				for classifierValues in possibleClassifiers:
+					prob = atributePct(nmj[nBranch],classifier,classifierValues)
+					if prob <= 0:
+						probLog = 0
+					else:
+						probLog = log(prob,2)
+					splitEntropy += (float(len(nmj[nBranch])) / len(nm)) * prob * probLog
+			else:
+				entropy = 400 #if nmj[0] or nmj[1] becomes empty, then splitting has no information gain! Arbitrarily set large entropy
+
+		return -1 * splitEntropy, nmj
 
 ###############################################################################################
 
@@ -201,68 +241,51 @@ class NodePack():
 # Entry -> Float (a constant) | DataRow[] (csv data)
 # Returns -> String (tag of the node that will be slip)| String (atribute for spliting) | String or Floar (value for spliting)
 
-	def bestSplit(self, maxEntropy, table):
-		if len(table) == 0:
-			 raise NameError('You are passing an empty table!')
-			 return None
-		else:
-			minEnt = maxEntropy
+	def bestSplit(self, maxEntropy, table, splitedDiscrete,splitedValue):
+		minEnt = maxEntropy
 
-			bestTag = None
-			bestAtribute = None
-			bestValue = None
+		bestTag = None
+		bestAtribute = None
+		bestValue = None
+		#entropy = 5000
 
-			for nTag in self.retrieveListOfNodesByType(NodeType.EDGE):
-				print "nTag = " + str(nTag) 
-				for atribute in table[0].headers:
-					print "atribute = " + str(atribute)
-					for value in distinctAtributes(table, atribute):
-						print "value = " + str(value)
-						entropy = self.getSplitEntropy(nTag,atribute,value,table)
-						print "entropy = " + str(entropy)
+		for nTag in self.retrieveListOfNodesByType(NodeType.EDGE):
+			#print ">> nTag = " + str(nTag) 
+			nm = filterTableByID(table,self.getDataRowIDs(nTag))
+			for atribute in table[0].headers:
+				featureType = nm[0].retrieve(atribute).fType
+				if featureType==FeatureType.CONTINUOUS and nm!=None:
+					try:
+						value = np.median(retrieveDataFromColumn(nm,atribute))
+						entropy, nmj = self.getSplitEntropy(nTag,atribute,value,nm) 
 						if entropy < minEnt:
+							minEnt=entropy
+							bestTag = nTag
+							bestAtribute = atribute
+							bestValue = value							
+					except: 
+						print 'tried to split empty node and skipped:' + str(nTag)
+						pass
+
+				elif featureType==FeatureType.DISCRETE and (atribute,value) not in splitedValue:
+					# if atribute not in splitedDiscrete:
+						#print "atribute = " + str(atribute)
+					for value in distinctAtributes(nm, atribute):
+												
+						#print "value = " + str(value)
+						entropy, nmj = self.getSplitEntropy(nTag,atribute,value,nm)  
+						#print "entropy = " + str(entropy)
+						if entropy < minEnt:
+							minEnt=entropy
 							bestTag = nTag
 							bestAtribute = atribute
 							bestValue = value
-			return bestTag, bestAtribute, bestValue
+		# print 'Entropy = ' + str(entropy)
+		#print bestTag
+		#print bestAtribute
+		#print bestValue
+		return bestTag, bestAtribute, bestValue, nmj
 
 ###############################################################################################
-
-if __name__ == '__main__':
-	global dtree
-	a = NodePack()
-	a.addNode(1)
-	a.addNodeType(1,NodeType.EDGE)
-	a.addDataRowIDs(1, map(str,range(1,21)))
-	l=importDataCSV("metadata.csv","dummy.csv")
-
-	'''dtree.addNode(1)
-	dtree.addNode(2)
-	dtree.addNode(3)
-	dtree.addNode(4)
-	dtree.addNode(5)
-	dtree.addNode(6)
-	dtree.addNode(7)
-
-	dtree.addParent(2, 1)
-	dtree.addParent(3, 1)
-	dtree.addParent(4, 2)
-	dtree.addParent(5, 2)
-	dtree.addParent(6, 3)
-	dtree.addParent(7, 3)
-
-	dtree.addChild0(1,2)
-	dtree.addChild1(1,3)
-	dtree.addChild0(2,4)
-	dtree.addChild1(2,5)
-	dtree.addChild0(3,6)
-	dtree.addChild1(3,7)
-
-	dtree.addNodeType(2, NodeType.LEAF)
-	dtree.addNodeType(3, NodeType.UNDEF)
-	dtree.addNodeType(4, NodeType.LEAF)
-	dtree.addNodeType(5, NodeType.EDGE)
-	dtree.addNodeType(6, NodeType.EDGE)
-	dtree.addNodeType(7, NodeType.EDGE)'''
 
 

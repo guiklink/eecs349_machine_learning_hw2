@@ -48,12 +48,12 @@ def getRules(tree):
 				if leafClass == 1: 
 					print Rule
 					if NodeType.ROOT == tree.getNodeType(node):
-						print " THEN TRUE."
+						print " THEN WINNER."
 					if count != stop:
 						print "OR"
 				if leafClass == 0:
 					print Rule
 					if NodeType.ROOT == tree.getNodeType(node):
-						print " THEN FALSE."
+						print " THEN LOSER."
 					if count != stop:
 						print "OR"

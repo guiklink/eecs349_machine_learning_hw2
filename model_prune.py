@@ -5,13 +5,13 @@
 
 from tree_util import *
 from data_util import *
-import draw_tree
 import model_validate
-import mockTree
+from tree_gen import InitTree
 from copy import *
 
-tree = mockTree.makeTree()
-data = importDataCSV("metadata.csv","minidata.csv")
+trainData = importDataCSV("metadata.csv","dummy.csv")
+tree = InitTree("metadata.csv", trainData)
+valData = importDataCSV("metadata.csv","bvalidate.csv")
 
 accuracy = model_validate.validateTree(tree, data)
 
