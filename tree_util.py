@@ -6,6 +6,7 @@ from csv_handler import *
 from math import log
 import numpy as np
 import operator
+import pickle
 
 # NODE TYPE #################################################################################
 
@@ -159,6 +160,9 @@ class NodePack():
 			sortedDistinctClass = sorted(distinctClass.items(), key=operator.itemgetter(1))
 			mostCommonClass = sortedDistinctClass[-1][0]
 			self.addMajorityClassification(tag,mostCommonClass)
+
+	def writeNodePackToFile(self):
+		pickle.dump(self,open('./NodePack.pkl','w+'))
 
 
 ###############################################################################################
