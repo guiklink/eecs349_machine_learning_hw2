@@ -69,11 +69,11 @@ def BuildTree(nodePack, rawTable):
 
 	terminationCounter=0
 	prevNodePackSize= len(nodePack.fields[0].keys())
-	while len(nodePack.retrieveListOfNodesByType(NodeType.EDGE)) != 0 and terminationCounter < 2:
-		
-		print '>> Generating ...'
+	edgeNodes = nodePack.retrieveListOfNodesByType(NodeType.EDGE)
+	while len(edgeNodes) != 0 and terminationCounter < 2:
 
-		edgeNodes = nodePack.retrieveListOfNodesByType(NodeType.EDGE)
+
+		# print '>NODE ' + str(nodeCount)
 
 		# print '\n\nAll nodes'
 		# print nodePack.fields[0].keys()
@@ -98,12 +98,14 @@ def BuildTree(nodePack, rawTable):
 				#print '******** CREATING LEAF*****************'
 				#print nodeTag
 				nodePack.addNodeType(nodeTag,NodeType.LEAF)
-		#print 'Node:' + str(nodeCount) + ' | Entropy = ' + str(nodePack.getNodeEntropy(nodeCount, rawTable)) 
+
+		# print 'Node:' + str(nodeCount) + ' | Entropy = ' + str(nodePack.getNodeEntropy(nodeCount, rawTable)) 
 
 		if len(nodePack.fields[0].keys()) == prevNodePackSize:
 			terminationCounter+=1
 
 		splitNodeTag,splitFeature,splitValue,nmj = nodePack.bestSplit(1000,rawTable,splittedDiscrete,splittedValue)
+		# print "splitNodeTag " + str (splitNodeTag), "splittedValue " + str (splitValue), "splitFeature " + str(splitFeature)
 
 		prevNodePackSize = len(nodePack.fields[0].keys())
 		if nmj[0] != [] and nmj[1] != []:
@@ -112,27 +114,49 @@ def BuildTree(nodePack, rawTable):
 			# add discrete value to a list, we do not want do them again
 			if rawTable[0].retrieve(splitFeature).fType == FeatureType.DISCRETE:
 				splittedDiscrete.append(splitFeature)
+			# print '\n\n####splittedValue' + str(splittedValue)
+			# print '\n\n####splitDiscrete ' + str(splittedDiscrete) 
 
 			# Create child 0
 			nodeCount += 1
-			makeChild(nodePack, nodeCount, nodeTag, nmj[0])
+
+			# print 'creating child 0 #####'
+			# print 'nodecount'
+			# print nodeCount
+			# print 'splitNodeTag'
+			# print splitNodeTag
+
+			makeChild(nodePack, nodeCount, splitNodeTag, nmj[0])#nodeTag=parent
 			nodePack.addChild0(nodeTag,nodeCount)
+			# print 'parent' , splitNodeTag
+
 
 			# Create child 1
 			nodeCount += 1
-			makeChild(nodePack, nodeCount, nodeTag, nmj[1])
+
+			# print 'creating child 1 ####'
+			# print 'nodecount'
+			# print nodeCount
+			# print 'splitNodeTag'
+			# print splitNodeTag
+
+			# raw_input('Enter')
+
+			makeChild(nodePack, nodeCount, splitNodeTag, nmj[1])#nodeTag=parent
 			nodePack.addChild1(nodeTag,nodeCount)
 
 			# Update Parent fields
-			nodePack.addSplitType(nodeTag,rawTable[0].retrieve(splitFeature).fType)
 
-			if rootNode == nodeTag:
-				nodePack.addNodeType(nodeTag,NodeType.ROOT)
+			if rootNode == splitNodeTag:
+				nodePack.addNodeType(splitNodeTag,NodeType.ROOT)
 			else:
-				nodePack.addNodeType(nodeTag,NodeType.UNDEF)
+				nodePack.addNodeType(splitNodeTag,NodeType.UNDEF)
+
+			nodePack.addSplitType(nodeTag,rawTable[0].retrieve(splitFeature).fType)
 
 			nodePack.addSplitAtribute(nodeTag,splitFeature)
 			nodePack.addSplitValue(nodeTag, splitValue)
+
 
 	nodePack.switchNodeTypes(NodeType.EDGE,NodeType.LEAF)
 	print "updating majority classifiers ..."

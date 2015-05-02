@@ -4,12 +4,12 @@ winpercent,continuous
 oppwinpercent,continuous
 weather,discrete
 temperature,continuous
-numinjured,continuous
-oppnuminjured,continuous
+numinjured,discrete
+oppnuminjured,discrete
 startingpitcher,discrete
 oppstartingpitcher,discrete
-dayssincegame,continuous
-oppdayssincegame,continuous
+dayssincegame,discrete
+oppdayssincegame,discrete
 homeaway,discrete
 rundifferential,continuous
 opprundifferential,continuous
