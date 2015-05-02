@@ -139,7 +139,7 @@ class NodePack():
 			print '=====> Parent: ' + str(self.getParent(n))
 			print '=====> Child0: ' + str(self.getChild0(n))
 			print '=====> Child1: ' + str(self.getChild1(n))
-			print '=====> Data Instances: ' + str(self.getDataRowIDs(n))
+			# print '=====> Data Instances: ' + str(self.getDataRowIDs(n))
 			print '=====> Split Atribute: ' + str(self.getSplitAtribute(n))
 			print '=====> Split Value: ' + str(self.getSplitValue(n))
 
@@ -163,11 +163,11 @@ class NodePack():
 		classifierTag = nm[0].retrieveClassifierTag()				# takes the classifier from the 1th data row
 		entropy = 0													# init a variable to store entrophy
 		classValues = distinctAtributes(nm,classifierTag)			# retrieve all possible classifier values
-		print '\n\n##############about to enter for loop entropy'
-		print classValues
+		# print '\n\n##############about to enter for loop entropy'
+		# print classValues
 		for val in classValues:
 			if val != '?':
-				print '#############for loop entered'
+				# print '#############for loop entered'
 				pct = atributePct(nm,classifierTag,val)					# gets the % of that value in the whole data
 				entropy += pct * log(pct,2)								# calculates and store entropy for the value
 		return (-1 * entropy)										# return entrophy
@@ -244,7 +244,7 @@ class NodePack():
 		#entropy = 5000
 
 		for nTag in self.retrieveListOfNodesByType(NodeType.EDGE):
-			#print ">> nTag = " + str(nTag) 
+			print ">> Exploring node = " + str(nTag) 
 			nm = filterTableByID(table,self.getDataRowIDs(nTag))
 			for atribute in table[0].headers:
 				featureType = nm[0].retrieve(atribute).fType
@@ -252,7 +252,10 @@ class NodePack():
 					try:
 						value = np.median(retrieveDataFromColumn(nm,atribute))
 						entropy, nmj = self.getSplitEntropy(nTag,atribute,value,nm) 
+						# print "min Entropy" + str(minEnt)
+						# print "split Entropy" + str(entropy)
 						if entropy < minEnt:
+							minEnt=entropy
 							bestTag = nTag
 							bestAtribute = atribute
 							bestValue = value							
@@ -260,22 +263,27 @@ class NodePack():
 						print 'tried to split empty node and skipped:' + str(nTag)
 						pass
 
-				elif featureType==FeatureType.DISCRETE and (atribute,value) not in splitedValue:
+				elif featureType==FeatureType.DISCRETE:
 					# if atribute not in splitedDiscrete:
 						#print "atribute = " + str(atribute)
 					for value in distinctAtributes(nm, atribute):
+						# if (atribute,value) not in splitedValue:
 												
-						#print "value = " + str(value)
+						# print "atribute" + str(atribute) ,"|  value = " + str(value)
 						entropy, nmj = self.getSplitEntropy(nTag,atribute,value,nm)  
-						#print "entropy = " + str(entropy)
+						# print "entropy = " + str(entropy) 
 						if entropy < minEnt:
+							
+							minEnt=entropy
+							# print "node= " + str(nTag), "minentropy = " + str(minEnt)
+							# raw_input('Enter')
 							bestTag = nTag
 							bestAtribute = atribute
 							bestValue = value
 		# print 'Entropy = ' + str(entropy)
-		print bestTag
-		print bestAtribute
-		print bestValue
+		# print bestTag
+		# print bestAtribute
+		# print bestValue
 		return bestTag, bestAtribute, bestValue, nmj
 
 ###############################################################################################
