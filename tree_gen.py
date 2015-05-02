@@ -70,7 +70,7 @@ def BuildTree(nodePack, rawTable):
 
 	terminationCounter=0
 	prevNodePackSize= len(nodePack.fields[0].keys())
-	while len(nodePack.retrieveListOfNodesByType(NodeType.EDGE)) != 0 and terminationCounter < 3:
+	while len(nodePack.retrieveListOfNodesByType(NodeType.EDGE)) != 0 and terminationCounter < 2:
 		
 		print '>NODE ' + str(nodeCount)
 
@@ -136,6 +136,8 @@ def BuildTree(nodePack, rawTable):
 			nodePack.addSplitValue(nodeTag, splitValue)
 
 			
+	nodePack.switchNodeTypes(NodeType.EDGE,NodeType.LEAF)
+
 	return nodePack
 
 

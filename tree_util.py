@@ -143,6 +143,12 @@ class NodePack():
 			print '=====> Split Atribute: ' + str(self.getSplitAtribute(n))
 			print '=====> Split Value: ' + str(self.getSplitValue(n))
 
+	def switchNodeTypes(self, nTypeOld, nTypeNew):
+		for tag in self.fields[0].keys():
+			if self.getNodeType(tag) == nTypeOld:
+				self.addNodeType(tag,nTypeNew)
+
+
 ###############################################################################################
 
 # ENTROPHY ####################################################################################
@@ -163,6 +169,7 @@ class NodePack():
 		classifierTag = nm[0].retrieveClassifierTag()				# takes the classifier from the 1th data row
 		entropy = 0													# init a variable to store entrophy
 		classValues = distinctAtributes(nm,classifierTag)			# retrieve all possible classifier values
+
 		print '\n\n##############about to enter for loop entropy'
 		print classValues
 		for val in classValues:
