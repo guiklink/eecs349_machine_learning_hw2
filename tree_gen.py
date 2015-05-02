@@ -20,7 +20,7 @@ nodeCount = rootNode
 
 def InitTree():
 	global rootNode
-	rawTable = importDataCSV("metadata.csv","dummy.csv")
+	rawTable = importDataCSV("metadata.csv","btrain.csv")
 
 	nodePack = NodePack()
 
@@ -73,7 +73,7 @@ def BuildTree(nodePack, rawTable):
 
 		edgeNodes = nodePack.retrieveListOfNodesByType(NodeType.EDGE)
 
-		print '\n\nAll nodes'
+		'''print '\n\nAll nodes'
 		print nodePack.fields[0].keys()
 		print '\n\n ****** ROOT'
 		print nodePack.retrieveNodesByType(NodeType.ROOT)
@@ -85,9 +85,9 @@ def BuildTree(nodePack, rawTable):
 		print nodePack.retrieveNodesByType(NodeType.EDGE)
 
 		print '\n\n ****** ALL UNDEF NODES'
-		print nodePack.retrieveNodesByType(NodeType.UNDEF)
+		print nodePack.retrieveNodesByType(NodeType.UNDEF)'''
 		
-		nodePack.printNodePack()
+		# nodePack.printNodePack()
 
 		# w=input('\n\nWaiting... ')
 
