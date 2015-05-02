@@ -153,10 +153,10 @@ def BuildTree(nodePack, rawTable):
 			else:
 				nodePack.addNodeType(splitNodeTag,NodeType.UNDEF)
 
-			nodePack.addSplitType(nodeTag,rawTable[0].retrieve(splitFeature).fType)
+			nodePack.addSplitType(splitNodeTag,rawTable[0].retrieve(splitFeature).fType)
 
-			nodePack.addSplitAtribute(nodeTag,splitFeature)
-			nodePack.addSplitValue(nodeTag, splitValue)
+			nodePack.addSplitAtribute(splitNodeTag,splitFeature)
+			nodePack.addSplitValue(splitNodeTag, splitValue)
 
 
 	nodePack.switchNodeTypes(NodeType.EDGE,NodeType.LEAF)
