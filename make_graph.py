@@ -2,7 +2,7 @@ import matplotlib as plt
 import model_validation
 import random
 
-def genCurve(dataSet, tree):
+def genCurve(trainData, valData):
 	x = [] # stores the x axis of the graph
 	trainList = [] # the list of accuracies derived from training data
 	valList = [] # the list of accuracies derived from validation data
@@ -12,10 +12,10 @@ def genCurve(dataSet, tree):
 		a = 0
 		b = 0
 		for trial in range(3):
-			newData = sortData(dataSet, i) # MAKE THIS
+			newData = sortData(trainData, i) # MAKE THIS
 			tree = getTree(newData) # NEED TO GET THIS FUNCTION WHEN TREEGEN WORKS
 			a = a + model_validation.validateTree(tree, newData)
-			b = b + model_validation.validateTree(tree, newData)
+			b = b + model_validation.validateTree(tree, valData)
 		a = float(a)/3
 		b = float(b)/3
 
