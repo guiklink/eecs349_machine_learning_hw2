@@ -259,11 +259,12 @@ class NodePack():
 						value = np.median(retrieveDataFromColumn(nm,atribute))
 						entropy, nmj = self.getSplitEntropy(nTag,atribute,value,nm) 
 						if entropy < minEnt:
+							minEnt=entropy
 							bestTag = nTag
 							bestAtribute = atribute
 							bestValue = value							
 					except: 
-						print 'tried to split empty node and skipped:' + str(nTag)
+						# print 'tried to split empty node and skipped:' + str(nTag)
 						pass
 
 				elif featureType==FeatureType.DISCRETE and (atribute,value) not in splitedValue:
@@ -275,6 +276,7 @@ class NodePack():
 						entropy, nmj = self.getSplitEntropy(nTag,atribute,value,nm)  
 						#print "entropy = " + str(entropy)
 						if entropy < minEnt:
+							minEnt=entropy
 							bestTag = nTag
 							bestAtribute = atribute
 							bestValue = value

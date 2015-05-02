@@ -3,11 +3,12 @@
 
 from tree_util import *
 from data_util import *
-import mockTree
+from tree_gen import InitTree
 import numpy as np
 
-tree = mockTree.makeTree()
-valdata = importDataCSV("metadata.csv","minidata.csv")
+trainData = importDataCSV("metadata.csv","dummy.csv")
+# tree = InitTree("metadata.csv", trainData)
+valData = importDataCSV("metadata.csv","bvalidate.csv")
 
 def validateTree(tree, dataSet):
 	"""Used for validating a learned tree against a validation set, returns percentage accuracy"""
