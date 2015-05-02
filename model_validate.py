@@ -6,28 +6,6 @@ from data_util import *
 import mockTree
 import numpy as np
 
-# 0.6458767915
-# 0.4152051353
-# 0.5437003729
-# 0.7401316767
-# 0.7028994802
-# 0.7129567872
-# ?
-# 0.8103100412
-# 0.3269774799
-# 0.7337943657
-# 0.5631648111
-# 0.6173030736
-# 0.3801946413
-# 0.4905306461
-# 0.6776226923
-# 0.2904823661
-# 0.178755435
-# 0.5654748159
-# 0.2968391471
-# 0.5323625428
-
-
 tree = mockTree.makeTree()
 valdata = importDataCSV("metadata.csv","minidata.csv")
 
@@ -46,8 +24,6 @@ def validateTree(tree, dataSet):
 				break
 			#keep going down the tree until no children exist, then get output classification
 
-		# print "node type", tree.getNodeType(node)
-
 		while tree.getNodeType(node) != NodeType.LEAF and tree.getNodeType(node) != NodeType.UNDEF:
 			
 			splitVal = tree.getSplitValue(node)
@@ -55,29 +31,23 @@ def validateTree(tree, dataSet):
 			splitAttribute = tree.getSplitAtribute(node)
 			# print "tree split attribute: ", splitAttribute
 			val = dataPoint.retrieve(splitAttribute).getValue()
-			if val = None:
-				nm = filterTableByID(dataSet, tree.getDataRowsIDs(node))
-				val = np.median(retrieveDataFromColumn(nm, splitAttribute))
-			print "val is",val
-			# print "data point value for split attribute: ", val
+
+			if val == None:		
+				val = np.median(retrieveDataFromColumn(dataSet, splitAttribute))
+
 			if FeatureType.CONTINUOUS == tree.getSplitType(node): 
 				if val >= splitVal:
 					node = tree.getChild0(node)
-					# print "node type", tree.getNodeType(node)
-					# print "greater than", "going to next node", node
+
 				else:
 					node = tree.getChild1(node)
-					# print "lesser than", "going to next node", node
-					# print "node type", tree.getNodeType(node)
+
 			elif FeatureType.DISCRETE == tree.getSplitType(node):
 				if val != splitVal:
 					node = tree.getChild0(node)
-					# print "not equal", " going to next node", node
-					# print "node type", tree.getNodeType(node)
+
 				else:
 					node = tree.getChild1(node)
-					# print "equal", "goint to next node", node
-					# print "node type", tree.getNodeType(node)
 
 		if tree.getNodeType(node)== NodeType.LEAF:
 			leafClass = tree.getMajorityClassification(node)
