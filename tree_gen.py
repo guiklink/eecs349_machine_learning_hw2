@@ -171,5 +171,6 @@ def BuildTree(nodePack, rawTable):
 ###############################################################################################
 
 if __name__ == '__main__':
-	rawTable = importDataCSV('metadata.csv','dummy.csv')
+	rawTable = importDataCSV('metadata.csv','btrain.csv')
 	tree = InitTree(rawTable)
+	tree.writeNodePackToFile('./NodePackFullData.pkl')

@@ -161,8 +161,8 @@ class NodePack():
 			mostCommonClass = sortedDistinctClass[-1][0]
 			self.addMajorityClassification(tag,mostCommonClass)
 
-	def writeNodePackToFile(self):
-		pickle.dump(self,open('./NodePack.pkl','w+'))
+	def writeNodePackToFile(self, path):
+		pickle.dump(self,open(path,'w+'))
 
 
 ###############################################################################################
