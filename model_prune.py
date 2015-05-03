@@ -20,9 +20,10 @@ def pruneTree(tree, valData):
 	oldAccuracy = 0
 	# treeBest = deepcopy(tree)
 	treeBest = tree
+	newTree = deepcopy(tree)#changed by sherif
 	for node in tree.fields[tree.nType].keys():
 		if NodeType.UNDEF == tree.getNodeType(node):
-			newTree = deepcopy(tree)
+			
 			newTree.addNodeType(node, NodeType.LEAF) # convert to leaf
 			newAccuracy = model_validate.validateTree(newTree, valData)
 			# print newAccuracy
@@ -42,9 +43,10 @@ def removeChild(tree, node):
 	nodeList = [node]
 	currentNode = node
 
-	newTree.addNodeType(node, NodeType.UNDEF)
+	newTree.addNodeType(node, NodeType.LEAF)
 
 	while len(nodeList) > 0 : 
+		print "currentNode", currentNode
 		if newTree.getNodeType(currentNode) == NodeType.UNDEF: #previous to split EDGE
 			child0 = newTree.getChild0(currentNode)
 			child1 = newTree.getChild1(currentNode)

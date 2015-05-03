@@ -87,7 +87,8 @@ class DataRow():											# Data structure for a row of data
 	def retrieveClassifierValue(self):
 		return self.features[self.nFeatures - 1].getValue()
 
-		
+	def retrieveClassifierType(self):
+		return self.features[self.nFeatures - 1].fType		
 ###############################################################################################
 
 # Table Printer ##############################################################################

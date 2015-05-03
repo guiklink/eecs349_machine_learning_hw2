@@ -10,7 +10,6 @@ def getRules(tree):
 	count = 0
 	#for all of the nodes in tree model
 	for i in tree.fields[tree.nType].keys():
-		print "in for, i is: ", i
 		count+= 1
 		# find a leaf
 		if NodeType.LEAF == tree.getNodeType(i):
@@ -19,19 +18,17 @@ def getRules(tree):
 			leafClass = tree.getMajorityClassification(node)
 			
 			while tree.getParent(node) != None:
-				print "in while, node: ", node
-
-				splitVal = tree.getSplitValue(node)
-				splitAttribute = tree.getSplitAtribute(node)
-				if FeatureType.CONTINUOUS == tree.getSplitType(node):
-					print 
+				splitVal = tree.getSplitValue(tree.getParent(node))
+				splitAttribute = tree.getSplitAtribute(tree.getParent(node))
+				if FeatureType.CONTINUOUS == tree.getSplitType(tree.getParent(node)):
+					 
 					if node == tree.getChild0(tree.getParent(node)): 
 						
 						Rule = Rule + splitAttribute + " < " + str(splitVal)
 						node = tree.getParent(node)
 						if tree.getParent(node):
 							Rule = Rule + " AND "
-								
+				
 													
 					else:
 						Rule = Rule +splitAttribute + " >= " + str(splitVal)
@@ -39,7 +36,7 @@ def getRules(tree):
 						if tree.getParent(node):
 							Rule = Rule + " AND "
 						
-				elif FeatureType.DISCRETE == tree.getSplitType(node):
+				elif FeatureType.DISCRETE == tree.getSplitType(tree.getParent(node)):
 					
 					if node == tree.getChild0(tree.getParent(node)): 
 

@@ -9,7 +9,7 @@ from tree_gen import InitTree
 import csv
 
 trainData = importDataCSV("metadata.csv","dummy.csv")
-tree = InitTree(trainData)
+# tree = InitTree(trainData)
 testData = importDataCSV("metadata.csv","dummytest.csv")
 
 
@@ -36,7 +36,7 @@ def predict(tree, dataSet):
 			print "tree split attribute: ", splitAttribute
 			val = dataPoint.retrieve(splitAttribute).getValue()
 			if val == None:		
-				val = np.median(retrieveDataFromColumn(dataSet, splitAttribute))
+				val = np.median(retrieveDataFromColumn(dataSetlitAttribute))
 
 			print "data point value for split attribute: ", val
 			if FeatureType.CONTINUOUS == tree.getSplitType(node): 
